@@ -148,6 +148,11 @@ def calculate_pmpnn_consistency(output_dir, designable_csv, designable_csv_path)
     for sample_dir in sample_dirs:
         pmpnn_fasta_path = os.path.join(sample_dir, 'self_consistency', 'seqs', 'sample_modified.fasta')
         codesign_fasta_path = os.path.join(sample_dir, 'self_consistency', 'codesign_seqs', 'codesign.fa')
+        # ... 在这行之前加个检查
+        if not os.path.exists(pmpnn_fasta_path):
+            print(f"⚠️ 警告: 找不到文件 {pmpnn_fasta_path}，跳过该样本。")
+            return None # 或者 continue，取决于上下文结构，或者让它返回空值
+
         pmpnn_fasta = fasta.FastaFile.read(pmpnn_fasta_path)
         codesign_fasta = fasta.FastaFile.read(codesign_fasta_path)
         codesign_seq = codesign_fasta['codesign_seq_1']

@@ -1,0 +1,55 @@
+# name: multiflow_clean
+# channels:
+#   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+#   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+#   - defaults
+# dependencies:
+#   # --- 1. 基础环境 (Conda 负责) ---
+#   - python=3.10
+#   - numpy
+#   - pandas
+#   - scipy
+#   - matplotlib
+#   - seaborn
+#   - biopython
+#   - scikit-learn
+#   - pip
+  
+#   # --- 2. 核心库 (Pip 负责，避开 Conda 的 Solving Error) ---
+#   - pip:
+#       # (1) 显卡核心: 指定下载 CUDA 11.8 版本，适配 4090
+#       - torch==2.0.1+cu118 --index-url https://download.pytorch.org/whl/cu118
+#       - torchvision==0.15.2+cu118 --index-url https://download.pytorch.org/whl/cu118
+#       - torchaudio==2.0.2+cu118 --index-url https://download.pytorch.org/whl/cu118
+      
+#       # (2) 其他依赖
+#       # 注意：DeepSpeed 0.5.9 很老，如果安装失败建议删掉版本号直接写 "deepspeed"
+#       - deepspeed==0.5.9 
+#       - biotite
+#       - fair-esm
+#       - hydra-core
+#       - pytorch-lightning
+#       - wandb
+#       - einops
+#       - mdtraj
+#       - ml-collections
+#       - dm-tree
+#       - tqdm
+#       - ipdb
+#       - click
+
+name: multiflow_clean
+channels:
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - seaborn
+  - biopython
+  - scikit-learn
+  - pip

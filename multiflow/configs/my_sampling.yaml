@@ -1,34 +1,32 @@
-# Configuration for inference on SE(3) diffusion experiments.
 defaults:
   - base
   - _self_
 
 inference:
-
+  # 输出结果保存位置
   predict_dir: ./inference_outputs/
-  inference_subdir: run_${now:%Y-%m-%d}_${now:%H-%M-%S}
+  inference_subdir: test_run_${now:%Y-%m-%d}_${now:%H-%M-%S}
+  
   task: unconditional
   seed: 123
   use_gpu: True
-  num_gpus: 1
+  num_gpus: 1  # 哪怕你有多个卡，测试时只用1个最稳
 
+  # 权重路径 (对应你刚才解压的位置)
   saved_ckpt_dir: ./saved_ckpts/frameflow
-
   unconditional_ckpt_path: ./weights/last.ckpt
 
-  also_fold_pmpnn_seq: True # whether to also fold the generated pmpnn seq for each structure
-  write_sample_trajectories: False # whether to also save the trajectory of the generation process
+  also_fold_pmpnn_seq: True 
+  write_sample_trajectories: False
 
   interpolant:
     min_t: 1e-2
     provide_kappa: False
     codesign_separate_t: False
-
     rots:
       corrupt: True
       sample_schedule: exp
       exp_rate: 10
-
     trans:
       corrupt: True
       pre_align: True
@@ -49,41 +47,24 @@ inference:
       do_purity: True
       interpolant_type: masking
     sampling:
-      num_timesteps: 500
-      use_ttt_guidance: True
+      num_timesteps: 200 # 【修改】降到200步，跑得快一点（默认500）
       do_sde: False
-
     self_condition: True
 
-  # Directory of software, weights, and outputs.  
   pmpnn_dir: ./ProteinMPNN
 
   folding:
-    seq_per_sample: 8
+    seq_per_sample: 1 # 【修改】每个结构只设计1条序列
     folding_model: esmf
     own_device: False
     pmpnn_path: ./ProteinMPNN/
     pt_hub_dir: ./.cache/torch/
-    colabfold_path: path/to/colabfold-conda/bin/colabfold_batch # for AF2
+    colabfold_path: path/to/colabfold-conda/bin/colabfold_batch
 
   samples:
-
-    # Number of backbone samples per sequence length.
-    samples_per_length: 100
-
-    # Batch size when sampling from the model
+    samples_per_length: 1 # 【修改】只生成1个样本，用来验证不报错就行
     num_batch: 1
-
-    # Subset of lengths to sample. If null, sample all targets.
-    # length_subset: null
-    length_subset: [70, 100, 200, 300]
-
-    # Minimum sequence length to sample.
+    length_subset: [100]  # 【修改】只测试长度 100
     min_length: 60
-
-    # Maximum sequence length to sample.
-    max_length: 256 # 256
-
-    # gap between lengths to sample. i.e. this script will sample all lengths
-    # in range(min_length, max_length, length_step)
+    max_length: 256
     length_step: 1

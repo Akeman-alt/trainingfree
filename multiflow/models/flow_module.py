@@ -16,6 +16,7 @@ from multiflow.models.flow_model import FlowModel
 from multiflow.models import utils as mu
 from multiflow.models import folding_model
 from multiflow.data.interpolant import Interpolant 
+from multiflow.data.guided_interpolant import GuidedInterpolant
 from multiflow.data import utils as du
 from multiflow.data import all_atom, so3_utils
 from multiflow.data.residue_constants import restypes, restypes_with_x
@@ -460,9 +461,38 @@ class FlowModule(LightningModule):
     def predict_step(self, batch, batch_idx):
         del batch_idx # Unused
         device = f'cuda:{torch.cuda.current_device()}'
-        interpolant = Interpolant(self._infer_cfg.interpolant) 
+
+
+        def my_reward_fn(seq_samples):
+            # seq_samples: [N_samples, B, L] (Token IDs)
+            # 假设我们想要更多的丙氨酸 (Alanine, ID通常较小，具体看 residue_constants)
+            # 这是一个 Dummy Reward，你需要替换成你真正的物理能量函数
+            target_aa_id = 0 # 假设 0 是 Alanine
+            return (seq_samples == target_aa_id).float().mean(dim=-1) # [N, B]
+
+        guidance_config = {
+            'gamma': 0.5,       # 学习率/步长
+            'steps': 5,         # 内部优化步数 (因为有 Warm Start，步数可以少一点)
+            'N': 8,            # 采样次数
+            'lambda_kl': 0.0,   # KL 惩罚
+            'theta_clamp': 3
+        }
+
+        # 3. 实例化 GuidedInterpolant
+        # 注意：这里我们替换了原来的 Interpolant(...)
+        interpolant = GuidedInterpolant(
+            self._infer_cfg.interpolant,
+            guidance_config=guidance_config,
+            reward_fn=my_reward_fn
+        )
+        #interpolant = Interpolant(self._infer_cfg.interpolant) 
         interpolant.set_device(device)
 
+        if not hasattr(interpolant._cfg.sampling, 'use_ttt_guidance'):
+             # 使用 OmegaConf 或者直接赋值，视 cfg 类型而定
+             # 这里假设是 DictConfig，可以用点号访问
+             interpolant._cfg.sampling.use_ttt_guidance = True
+        #interpolant._cfg.sampling.use_ttt_guidance = False
         if 'sample_id' in batch:
             sample_ids = batch['sample_id'].squeeze().tolist()
         else:
