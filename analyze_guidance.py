@@ -3,12 +3,13 @@ import glob
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+matplotlib.use('Agg')
 import seaborn as sns
 
 # ================= 配置区域 =================
 # 🔴 请替换为你最新的 run 目录路径
+#RUN_DIR = "/data2/zq/multiflow/inference_outputs/weights/last/unconditional/run_2025-12-23_16-57-36"
 RUN_DIR = "/data2/zq/multiflow/inference_outputs/weights/last/unconditional/run_2025-12-23_23-39-18"
-
 # 🎯 奖励定义：必须与 flow_module.py 完全一致
 # 你的训练代码：target_aa_id = 0 (即 'A')
 TARGET_CHAR = 'A' 

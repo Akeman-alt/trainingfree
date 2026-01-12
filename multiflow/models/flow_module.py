@@ -470,13 +470,35 @@ class FlowModule(LightningModule):
             target_aa_id = 0 # 假设 0 是 Alanine
             return (seq_samples == target_aa_id).float().mean(dim=-1) # [N, B]
 
-        guidance_config = {
-            'gamma': 0.5,       # 学习率/步长
-            'steps': 5,         # 内部优化步数 (因为有 Warm Start，步数可以少一点)
-            'N': 8,            # 采样次数
-            'lambda_kl': 0.0,   # KL 惩罚
-            'theta_clamp': 3
-        }
+        # guidance_config = {
+        #     'gamma': 0.1,       # 学习率/步长
+        #     'steps': 5,         # 内部优化步数 (因为有 Warm Start，步数可以少一点)
+        #     'N': 8,            # 采样次数
+        #     'lambda_kl': 0.0,   # KL 惩罚
+        #     'theta_clamp': 3
+        # }
+
+        from omegaconf import OmegaConf
+        
+        # self._infer_cfg.interpolant 对应 yaml 里的 inference.interpolant
+        # 我们用 .get() 方法，防止 yaml 里没写报错
+        guidance_config = self._infer_cfg.interpolant.get('guidance', None)
+
+        # 2. 如果读取到了（不是 None），通常它是 OmegaConf 的 DictConfig 类型
+        #    为了安全起见，我们将它转换为普通的 Python 字典
+        if guidance_config is not None:
+            if not isinstance(guidance_config, dict):
+                guidance_config = OmegaConf.to_container(guidance_config, resolve=True)
+        else:
+            # [保底逻辑] 如果 yaml 里真的忘了加 guidance，给一个默认值防止代码崩
+            print("⚠️ Warning: 'guidance' not found in config, using defaults.")
+            guidance_config = {
+                'gamma': 0.1,
+                'steps': 5,
+                'N': 8,
+                'lambda_kl': 0.0,
+                'theta_clamp': 3.0
+            }
 
         # 3. 实例化 GuidedInterpolant
         # 注意：这里我们替换了原来的 Interpolant(...)

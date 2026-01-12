@@ -59,7 +59,18 @@ class GuidedInterpolant:
 
         self.num_tokens = 21 if self._aatypes_cfg.interpolant_type == "masking" else 20
         
-        self.guidance_config = guidance_config
+        if guidance_config is not None:
+            self.guidance_config = guidance_config
+        else:
+            # 尝试从 hydra 配置节点中读取 'guidance'
+            # 注意：这里的 self._cfg 通常对应 yaml 中的 inference.interpolant 部分
+            raw_guidance = self._cfg.get('guidance', None)
+            
+            if raw_guidance is not None:
+                # 将 DictConfig 转为普通的 python dict，方便后续 .get() 操作
+                self.guidance_config = OmegaConf.to_container(raw_guidance, resolve=True)
+            else:
+                self.guidance_config = None
         self.reward_fn = reward_fn
         self.last_theta = None
     @property
@@ -665,22 +676,79 @@ class GuidedInterpolant:
             d_t = t_2 - t_1
 
 
-            with torch.no_grad():
+            # with torch.no_grad():
+            #     model_out = model(batch)
+
+            # # Process model output.
+            # pred_trans_1 = model_out['pred_trans']
+            # pred_rotmats_1 = model_out['pred_rotmats']
+            # pred_aatypes_1 = model_out['pred_aatypes']
+            # pred_logits_1 = model_out['pred_logits']
+
+            # use_guidance = getattr(self._cfg.sampling, 'use_ttt_guidance', False)
+            # if use_guidance:
+                
+            #     # 2. 调用优化函数
+            #     # i==0 时 reset_theta=True，强制从0开始
+            #     # i>0  时 reset_theta=False，自动复用 self.last_theta
+            #     pred_logits_1 = self.optimize_logits(pred_logits_1, reset_theta=(i==0))
+
+
+
+
+            # -----------------------------------------------------------
+            # 🟢 [修改开始] 联合流形引导逻辑
+            # -----------------------------------------------------------
+            
+            # 0. 检查是否开启 Guidance
+            use_guidance = getattr(self._cfg.sampling, 'use_ttt_guidance', False)
+
+            # 1. 准备输入梯度 (如果开启引导，必须让输入可求导)
+            if use_guidance:
+                batch['trans_t'] = batch['trans_t'].detach().requires_grad_(True)
+
+            # 2. 模型前向传播 (开启梯度计算)
+            # 注意：即使是推理，为了对输入求导，也必须 enable_grad
+            with torch.enable_grad():
                 model_out = model(batch)
 
-            # Process model output.
-            pred_trans_1 = model_out['pred_trans']
-            pred_rotmats_1 = model_out['pred_rotmats']
-            pred_aatypes_1 = model_out['pred_aatypes']
-            pred_logits_1 = model_out['pred_logits']
+                pred_trans_1 = model_out['pred_trans']
+                pred_rotmats_1 = model_out['pred_rotmats']
+                pred_aatypes_1 = model_out['pred_aatypes']
+                pred_logits_1 = model_out['pred_logits']
 
-            use_guidance = getattr(self._cfg.sampling, 'use_ttt_guidance', False)
-            if use_guidance:
-                
-                # 2. 调用优化函数
-                # i==0 时 reset_theta=True，强制从0开始
-                # i>0  时 reset_theta=False，自动复用 self.last_theta
-                pred_logits_1 = self.optimize_logits(pred_logits_1, reset_theta=(i==0))
+                # 3. 执行引导逻辑
+                if use_guidance:
+                    # A. 序列优化 (Navigate): 算出理想的 Logits
+                    # i==0 时重置 theta，之后复用
+                    guided_logits = self.optimize_logits(pred_logits_1, reset_theta=(i==0))
+                    
+                    # B. 结构对齐 (Tug): 计算让结构适配序列的梯度
+                    # Target: 理想分布 (Detached)
+                    target_probs = torch.softmax(guided_logits.detach(), dim=-1)
+                    # Current: 当前预测 (Attached)
+                    current_log_probs = torch.log_softmax(pred_logits_1, dim=-1)
+                    
+                    # Consistency Loss (Cross Entropy)
+                    loss = -torch.sum(target_probs * current_log_probs)
+                    
+                    # C. 计算对输入结构 trans_t 的梯度
+                    grad_trans = torch.autograd.grad(loss, batch['trans_t'])[0]
+                    
+                    # D. 结构修正 (Steer)
+                    # 读取强度，默认为 5.0
+                    struct_scale = self.guidance_config.get('struct_scale', 5.0)
+                    # 沿着负梯度方向修正预测的终点
+                    pred_trans_1 = pred_trans_1.detach() - struct_scale * grad_trans
+                    
+                    # E. 确认序列结果
+                    pred_logits_1 = guided_logits.detach()
+
+            # 确保后续逻辑拿到的是 detached 的张量
+            pred_trans_1 = pred_trans_1.detach()
+            pred_logits_1 = pred_logits_1.detach()
+
+
 
             clean_traj.append((frames_to_atom37(pred_trans_1, pred_rotmats_1), pred_aatypes_1.detach().cpu()))
             if forward_folding:

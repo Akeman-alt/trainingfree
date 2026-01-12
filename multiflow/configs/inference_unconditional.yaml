@@ -55,6 +55,15 @@ inference:
 
     self_condition: True
 
+    guidance:
+      gamma: 0.1
+      steps: 5
+      N: 8
+      lambda_kl: 0.0
+      theta_clamp: 3.0
+      # guidance of structure
+      struct_scale: 5.0
+
   # Directory of software, weights, and outputs.  
   pmpnn_dir: ./ProteinMPNN
 

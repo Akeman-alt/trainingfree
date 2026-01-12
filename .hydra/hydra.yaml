@@ -111,14 +111,14 @@ hydra:
   overrides:
     hydra:
     - hydra.run.dir="/data2/zq/multiflow"
-    - hydra.job.name=train_ddp_process_6
+    - hydra.job.name=train_ddp_process_1
     - hydra.mode=RUN
     task:
-    - inference.num_gpus=8
+    - inference.num_gpus=4
   job:
-    name: train_ddp_process_6
+    name: train_ddp_process_1
     chdir: null
-    override_dirname: inference.num_gpus=8
+    override_dirname: inference.num_gpus=4
     id: ???
     num: ???
     config_name: inference_unconditional

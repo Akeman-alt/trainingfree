@@ -246,9 +246,74 @@ def run(cfg: DictConfig) -> None:
         else:
             raise ValueError(f'Unknown task {cfg.inference.task}')
 
+
+
+    class LoggerTee(object):
+        def __init__(self, filename="Default.log"):
+            self.terminal = sys.stdout
+            self.log = open(filename, "a", encoding='utf-8')
+    
+        def write(self, message):
+            self.terminal.write(message)
+            self.log.write(message)
+            self.log.flush() # 立即写入，防止丢失
+    
+        def flush(self):
+            self.terminal.flush()
+            self.log.flush()
+            
+        def close(self):
+            self.log.close()
+
+
+    def run_auto_analysis(output_dir):
+            original_stdout = sys.stdout
+            log_tee = None
+            try:
+                log.info(f"🤖 [Auto-Analysis] Triggering analysis for: {output_dir}")
+                
+                # 1. 准备路径
+                root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+                if root_dir not in sys.path:
+                    sys.path.append(root_dir)
+                
+                # 2. 🟢 设置日志保存路径
+                analysis_log_path = os.path.join(output_dir, "analysis_report.txt")
+                
+                # 3. 🟢 开启“双向输出”模式 (Tee)
+                # 之后所有的 print 都会同时出现在屏幕和这个 txt 里
+                log_tee = LoggerTee(analysis_log_path)
+                sys.stdout = log_tee
+                
+                print(f"Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
+                print(f"Log saved to: {analysis_log_path}\n")
+
+                # 4. 运行分析
+                import analyze_guidance
+                # 重新加载模块，防止 Notebook 或多次运行时的缓存问题
+                import importlib
+                importlib.reload(analyze_guidance)
+                
+                analyze_guidance.analyze_experiment(output_dir)
+                
+                log.info(f"✅ Auto-Analysis completed. Report saved to {analysis_log_path}")
+                
+            except Exception as e:
+                # 恢复标准输出再报错，否则报错信息可能丢了
+                sys.stdout = original_stdout 
+                log.error(f"⚠️ Auto-Analysis script failed to run: {e}")
+                import traceback
+                traceback.print_exc()
+            finally:
+                # 5. 🟢 还原标准输出 (非常重要！)
+                if log_tee is not None:
+                    log_tee.close()
+                sys.stdout = original_stdout
+
     if dist.is_initialized():
         if dist.get_rank() == 0:
             compute_metrics()
+            run_auto_analysis(sampler.inference_dir)
     else:
         compute_metrics()
 

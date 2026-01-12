@@ -197,7 +197,7 @@ inference:
   task: unconditional
   seed: 123
   use_gpu: true
-  num_gpus: 8
+  num_gpus: 4
   saved_ckpt_dir: ./saved_ckpts/frameflow
   unconditional_ckpt_path: ./weights/last.ckpt
   also_fold_pmpnn_seq: true
@@ -234,6 +234,13 @@ inference:
       use_ttt_guidance: true
       do_sde: false
     self_condition: true
+    guidance:
+      gamma: 0.1
+      steps: 5
+      'N': 8
+      lambda_kl: 0.0
+      theta_clamp: 3.0
+      struct_scale: 5.0
   pmpnn_dir: ./ProteinMPNN
   folding:
     seq_per_sample: 8
