@@ -1,4 +1,7 @@
 - inference.num_gpus=4
+- inference.samples.samples_per_length=25
+- inference.inference_subdir=run_expE_scale5.0_gamma0.1_steps20_kl0.05
 - inference.interpolant.guidance.struct_scale=5.0
-- inference.interpolant.guidance.gamma=0.5
-- inference.inference_subdir=run_scale5_gamma0.5
+- inference.interpolant.guidance.gamma=0.1
+- inference.interpolant.guidance.steps=20
+- inference.interpolant.guidance.lambda_kl=0.05
