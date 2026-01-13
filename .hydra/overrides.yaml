@@ -1,1 +1,4 @@
 - inference.num_gpus=4
+- inference.interpolant.guidance.struct_scale=5.0
+- inference.interpolant.guidance.gamma=0.5
+- inference.inference_subdir=run_scale5_gamma0.5

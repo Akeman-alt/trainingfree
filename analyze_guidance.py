@@ -2,41 +2,73 @@ import os
 import glob
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib
+
+# 设置 matplotlib 后端，防止在没有显示器的服务器上报错
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import seaborn as sns
+import argparse
+import logging
+import sys
+
 
 # ================= 配置区域 =================
-# 🔴 请替换为你最新的 run 目录路径
-#RUN_DIR = "/data2/zq/multiflow/inference_outputs/weights/last/unconditional/run_2025-12-23_16-57-36"
-RUN_DIR = "/data2/zq/multiflow/inference_outputs/weights/last/unconditional/run_2025-12-23_23-39-18"
 # 🎯 奖励定义：必须与 flow_module.py 完全一致
-# 你的训练代码：target_aa_id = 0 (即 'A')
 TARGET_CHAR = 'A' 
+
+def setup_logger(save_dir):
+    """
+    配置日志系统：同时输出到屏幕和文件
+    保存路径：run_dir/analysis_result.log
+    """
+    log_file = os.path.join(save_dir, 'analysis_result.log')
+    
+    # 获取 root logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    
+    # 清空已有的 handlers，防止重复打印
+    if logger.hasHandlers():
+        logger.handlers.clear()
+
+    # 1. 文件输出 Handler
+    file_handler = logging.FileHandler(log_file, mode='w')
+    file_handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+    logger.addHandler(file_handler)
+
+    # 2. 屏幕输出 Handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(logging.Formatter('%(message)s')) # 屏幕上看着清爽点，不用时间戳
+    logger.addHandler(console_handler)
+    
+    logger.info(f"📝 日志将自动保存至: {log_file}")
+    return logger
 
 def calculate_reward(sequence):
     """计算序列中目标氨基酸的占比"""
     if not isinstance(sequence, str) or len(sequence) == 0:
         return 0.0
-    # 统计 'A' 的数量 / 总长度
     return sequence.count(TARGET_CHAR) / len(sequence)
-# ===========================================
 
 def analyze_experiment(run_dir):
-    print(f"🚀 正在分析目录: {run_dir}")
-    print(f"🎯 目标氨基酸: '{TARGET_CHAR}' (对应 ID=0)")
+    # 初始化日志
+    logger = setup_logger(run_dir)
+    
+    logger.info(f"🚀 正在分析目录: {run_dir}")
+    logger.info(f"🎯 目标氨基酸: '{TARGET_CHAR}'")
     
     # 1. 寻找所有的 sc_results.csv
+    # 你的目录结构似乎是 run_dir/length_*/sample_*/sc_results.csv
     search_pattern = os.path.join(run_dir, "length_*", "sample_*", "sc_results.csv")
     csv_files = glob.glob(search_pattern)
     
     if not csv_files:
-        print("❌ 未找到结果文件，请检查路径。")
+        logger.error(f"❌ 未找到结果文件，请检查路径: {search_pattern}")
         return
 
     data_list = []
-    
-    print(f"⏳ 正在读取 {len(csv_files)} 个样本...")
+    logger.info(f"⏳ 正在读取 {len(csv_files)} 个样本...")
 
     for f in csv_files:
         try:
@@ -69,48 +101,64 @@ def analyze_experiment(run_dir):
                 'length': len(sequence)
             })
             
-        except Exception:
+        except Exception as e:
+            logger.warning(f"⚠️ 读取文件出错 {f}: {e}")
             continue
 
     df_all = pd.DataFrame(data_list)
     
     if len(df_all) == 0:
-        print("⚠️ 没有有效数据。")
+        logger.error("⚠️ 没有有效数据。")
         return
 
     # 2. 统计结果
     avg_reward = df_all['reward'].mean()
     avg_rmsd = df_all['rmsd'].mean()
+    max_reward = df_all['reward'].max()
 
-    print("\n" + "="*50)
-    print("       🧪 实验结果最终核对       ")
-    print("="*50)
-    print(f"【Reward】 (A 的占比)")
-    print(f"  平均值 : {avg_reward:.2%} (Baseline通常 < 10%)")
-    print(f"  最大值 : {df_all['reward'].max():.2%}")
-    print("-" * 50)
-    print(f"【RMSD】 (结构稳定性)")
-    print(f"  平均值 : {avg_rmsd:.4f} Å")
-    print("="*50)
+    logger.info("\n" + "="*50)
+    logger.info("       🧪 实验结果最终核对       ")
+    logger.info("="*50)
+    logger.info(f"【Reward】 (A 的占比)")
+    logger.info(f"  平均值 : {avg_reward:.2%} (Baseline通常 < 10%)")
+    logger.info(f"  最大值 : {max_reward:.2%}")
+    logger.info("-" * 50)
+    logger.info(f"【RMSD】 (结构稳定性)")
+    logger.info(f"  平均值 : {avg_rmsd:.4f} Å")
+    logger.info("="*50)
 
     # 3. 👁️ 视觉核对：打印 Top 3 序列
-    print("\n🏆【Top 3 高分序列展示】(请人眼检查是否有很多 A)")
+    logger.info("\n🏆【Top 3 高分序列展示】")
     top_seqs = df_all.sort_values(by='reward', ascending=False).head(3)
     for i, row in top_seqs.iterrows():
         seq = row['sequence']
-        # 为了显示方便，截取前 50 个字符
         display_seq = seq[:50] + "..." if len(seq) > 50 else seq
-        print(f"Runs: {row['reward']:.2%} | Seq: {display_seq}")
+        logger.info(f"Runs: {row['reward']:.2%} | Seq: {display_seq}")
 
     # 4. 绘图
+    # 图片保存到 run_dir 下，而不是当前代码目录，防止覆盖
+    plot_path = os.path.join(run_dir, "check_reward_dist.png")
+    
     plt.figure(figsize=(10, 4))
     sns.histplot(df_all['reward'], bins=20, kde=True, color='green')
     plt.title(f'Distribution of Alanine (A) Content\nMean: {avg_reward:.2%}')
     plt.xlabel('Fraction of A')
     plt.axvline(0.08, color='red', linestyle='--', label='Natural Baseline')
     plt.legend()
-    plt.savefig("check_reward_base.png")
-    print(f"\n📊 分布图已保存: check_reward.png")
+    plt.savefig(plot_path)
+    plt.close() # 关闭画布，释放内存
+    
+    logger.info(f"\n📊 分布图已保存: {plot_path}")
 
 if __name__ == "__main__":
-    analyze_experiment(RUN_DIR)
+    # 使用 argparse 解析命令行参数
+    parser = argparse.ArgumentParser(description="Analyze MultiFlow guidance experiment results.")
+    parser.add_argument('--run_dir', type=str, required=True, help="Path to the experiment run directory (e.g., .../run_2025-...)")
+    
+    args = parser.parse_args()
+    
+    # 检查路径是否存在
+    if not os.path.exists(args.run_dir):
+        print(f"Error: Directory not found: {args.run_dir}")
+    else:
+        analyze_experiment(args.run_dir)

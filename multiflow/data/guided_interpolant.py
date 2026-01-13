@@ -11,6 +11,7 @@ from scipy.optimize import linear_sum_assignment
 from torch import autograd
 from torch.distributions.categorical import Categorical
 from torch.distributions.binomial import Binomial
+from omegaconf import OmegaConf
 from torch.profiler import profile, record_function, ProfilerActivity
 
 
@@ -703,13 +704,16 @@ class GuidedInterpolant:
             # 0. 检查是否开启 Guidance
             use_guidance = getattr(self._cfg.sampling, 'use_ttt_guidance', False)
 
+            grad_context = torch.enable_grad() if use_guidance else torch.no_grad()
+
             # 1. 准备输入梯度 (如果开启引导，必须让输入可求导)
             if use_guidance:
+                
                 batch['trans_t'] = batch['trans_t'].detach().requires_grad_(True)
 
             # 2. 模型前向传播 (开启梯度计算)
             # 注意：即使是推理，为了对输入求导，也必须 enable_grad
-            with torch.enable_grad():
+            with grad_context:
                 model_out = model(batch)
 
                 pred_trans_1 = model_out['pred_trans']
@@ -730,17 +734,60 @@ class GuidedInterpolant:
                     current_log_probs = torch.log_softmax(pred_logits_1, dim=-1)
                     
                     # Consistency Loss (Cross Entropy)
-                    loss = -torch.sum(target_probs * current_log_probs)
+                    loss = -(target_probs * current_log_probs).sum(dim=-1).mean()
+
+
                     
                     # C. 计算对输入结构 trans_t 的梯度
                     grad_trans = torch.autograd.grad(loss, batch['trans_t'])[0]
                     
                     # D. 结构修正 (Steer)
                     # 读取强度，默认为 5.0
-                    struct_scale = self.guidance_config.get('struct_scale', 5.0)
-                    # 沿着负梯度方向修正预测的终点
-                    pred_trans_1 = pred_trans_1.detach() - struct_scale * grad_trans
+                    struct_scale = self.guidance_config.get('struct_scale', 1.5)
                     
+                    # 1. 计算梯度模长 (范数)
+                    # dim=(-1, -2) 是为了对每个样本的整个结构计算模长，而不是对每个原子
+                    grad_norm = torch.norm(grad_trans, dim=(-1, -2), keepdim=True)
+                    
+                    # 2. 梯度归一化 (防止梯度过大或过小)
+                    # 加上 1e-6 防止除以零
+                    # 2. 生成 Sample-wise Mask
+                    # 阈值建议 1e-2，小于这个值说明完全是数值噪声
+                    # 阈值 A: 相对阈值 (过滤掉 Batch 里的"差生")
+                    mean_grad_norm = grad_norm.mean()
+                    rel_threshold = 0.1 * mean_grad_norm
+                    
+                    # 阈值 B: 绝对底噪 (过滤掉 Step 0 的纯噪声)
+                    # 由于 Loss 改成了 Mean，梯度变小了约 L 倍(L~100)。
+                    # 之前的阈值是 1e-4，现在应该对应降到 1e-6 左右。
+                    abs_threshold = 1e-6 
+                    
+                    # 组合 Mask: 既要显著大于同伴，又要显著大于 0
+                    mask = ((grad_norm > rel_threshold) & (grad_norm > abs_threshold)).float()
+
+                    # 3. 归一化梯度
+                    normalized_grad = grad_trans / (grad_norm + 1e-6)
+                    time_scaling = (1.0 - t.view(-1, 1, 1))
+
+                    # 4. 应用 Mask
+                    # 只有梯度显著的样本才会被引导，其他的保持 0
+                    scaled_grad = normalized_grad * mask * struct_scale * time_scaling
+                        
+                    # 3. 施加修正
+                    pred_trans_1 = pred_trans_1.detach() - scaled_grad
+                    # 3. 施加修正
+                    # 此时 struct_scale 的物理意义变成了：
+                    # "如果 gradient 很大，我这一步预测的终点偏移 struct_scale 埃"
+                    # 配合 dt，每一步实际移动 struct_scale * dt 埃
+                    #pred_trans_1 = pred_trans_1.detach() - struct_scale * normalized_grad
+                    
+                    # 4. [强烈建议] 打印一下看看，心里有底
+                    # Debug 打印
+                    if i % 50 == 0:
+                        actual_disp = torch.norm(scaled_grad, dim=(-1, -2)).mean().item()
+                        # 打印实际位移的平均值，确认它随着时间(t变大)在减小
+                        print(f"Step {i}: Avg Displacement = {actual_disp:.4f} Å (Grad Norm: {grad_norm.mean().item():.6f})")
+                                        
                     # E. 确认序列结果
                     pred_logits_1 = guided_logits.detach()
 

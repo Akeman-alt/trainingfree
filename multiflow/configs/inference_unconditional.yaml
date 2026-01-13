@@ -62,7 +62,7 @@ inference:
       lambda_kl: 0.0
       theta_clamp: 3.0
       # guidance of structure
-      struct_scale: 5.0
+      struct_scale: 1.5
 
   # Directory of software, weights, and outputs.  
   pmpnn_dir: ./ProteinMPNN

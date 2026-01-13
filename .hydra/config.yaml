@@ -193,7 +193,7 @@ model:
     dropout: 0.0
 inference:
   predict_dir: ./inference_outputs/
-  inference_subdir: run_${now:%Y-%m-%d}_${now:%H-%M-%S}
+  inference_subdir: run_scale5_gamma0.5
   task: unconditional
   seed: 123
   use_gpu: true
@@ -235,7 +235,7 @@ inference:
       do_sde: false
     self_condition: true
     guidance:
-      gamma: 0.1
+      gamma: 0.5
       steps: 5
       'N': 8
       lambda_kl: 0.0
