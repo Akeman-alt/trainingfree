@@ -193,7 +193,7 @@ model:
     dropout: 0.0
 inference:
   predict_dir: ./inference_outputs/
-  inference_subdir: run_expE_scale5.0_gamma0.1_steps20_kl0.05
+  inference_subdir: run_expC_scale1.5_gamma0.1_steps10
   task: unconditional
   seed: 123
   use_gpu: true
@@ -236,11 +236,11 @@ inference:
     self_condition: true
     guidance:
       gamma: 0.1
-      steps: 20
+      steps: 10
       'N': 8
-      lambda_kl: 0.05
+      lambda_kl: 0.0
       theta_clamp: 3.0
-      struct_scale: 5.0
+      struct_scale: 1.5
   pmpnn_dir: ./ProteinMPNN
   folding:
     seq_per_sample: 8

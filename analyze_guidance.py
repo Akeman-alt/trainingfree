@@ -12,6 +12,9 @@ import argparse
 import logging
 import sys
 
+# 导入统一的 reward 计算函数
+from multiflow.data.reward_utils import calculate_reward
+
 
 # ================= 配置区域 =================
 # 🎯 奖励定义：必须与 flow_module.py 完全一致
@@ -45,11 +48,8 @@ def setup_logger(save_dir):
     logger.info(f"📝 日志将自动保存至: {log_file}")
     return logger
 
-def calculate_reward(sequence):
-    """计算序列中目标氨基酸的占比"""
-    if not isinstance(sequence, str) or len(sequence) == 0:
-        return 0.0
-    return sequence.count(TARGET_CHAR) / len(sequence)
+# calculate_reward 函数已移至 multiflow.data.reward_utils
+# 直接使用统一的 calculate_reward 函数
 
 def analyze_experiment(run_dir):
     # 初始化日志
@@ -90,8 +90,8 @@ def analyze_experiment(run_dir):
                         lines = fa.readlines()
                         if len(lines) >= 2: sequence = lines[1].strip()
 
-            # 计算奖励
-            reward = calculate_reward(sequence)
+            # 计算奖励（使用统一的 reward_utils）
+            reward = calculate_reward(sequence, target_chars=TARGET_CHAR)
             rmsd = best_row.get('bb_rmsd', np.nan)
 
             data_list.append({

@@ -463,12 +463,12 @@ class FlowModule(LightningModule):
         device = f'cuda:{torch.cuda.current_device()}'
 
 
-        def my_reward_fn(seq_samples):
-            # seq_samples: [N_samples, B, L] (Token IDs)
-            # 假设我们想要更多的丙氨酸 (Alanine, ID通常较小，具体看 residue_constants)
-            # 这是一个 Dummy Reward，你需要替换成你真正的物理能量函数
-            target_aa_id = 0 # 假设 0 是 Alanine
-            return (seq_samples == target_aa_id).float().mean(dim=-1) # [N, B]
+        # 使用统一的 reward 计算函数
+        from multiflow.data.reward_utils import create_reward_fn
+        
+        # 创建 reward_fn，目标氨基酸为 'A' (Alanine)
+        # 注意：这里使用字母 'A'，函数内部会自动转换为对应的数字索引
+        my_reward_fn = create_reward_fn(target_chars='A', device=device)
 
         # guidance_config = {
         #     'gamma': 0.1,       # 学习率/步长

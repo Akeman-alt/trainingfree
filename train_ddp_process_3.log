@@ -178,3 +178,527 @@
 [2026-01-13 19:02:32,447][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmp_wefbxn2/test.o -laio -o /data2/zq/conda_environment/tmp/tmp_wefbxn2/a.out
 [2026-01-13 19:02:33,205][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmppy530476/test.c -o /data2/zq/conda_environment/tmp/tmppy530476/test.o
 [2026-01-13 19:02:33,229][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmppy530476/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmppy530476/a.out
+[2026-01-13 20:38:46,387][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-13 20:38:46,480][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-13 20:40:54,544][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:1
+[2026-01-13 20:40:55,180][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmp04g7l_av/test.c -o /data2/zq/conda_environment/tmp/tmp04g7l_av/test.o
+[2026-01-13 20:40:55,673][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmp04g7l_av/test.o -laio -o /data2/zq/conda_environment/tmp/tmp04g7l_av/a.out
+[2026-01-13 20:40:56,544][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpd40wpct_/test.c -o /data2/zq/conda_environment/tmp/tmpd40wpct_/test.o
+[2026-01-13 20:40:56,569][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpd40wpct_/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpd40wpct_/a.out
+[2026-01-13 21:49:38,415][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-13 21:49:38,436][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-13 21:51:34,416][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:1
+[2026-01-13 21:51:35,022][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmp8gl3zqez/test.c -o /data2/zq/conda_environment/tmp/tmp8gl3zqez/test.o
+[2026-01-13 21:51:35,345][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmp8gl3zqez/test.o -laio -o /data2/zq/conda_environment/tmp/tmp8gl3zqez/a.out
+[2026-01-13 21:51:35,736][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpwf5iq1zw/test.c -o /data2/zq/conda_environment/tmp/tmpwf5iq1zw/test.o
+[2026-01-13 21:51:35,758][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpwf5iq1zw/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpwf5iq1zw/a.out
+[2026-01-14 01:10:41,201][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-14 01:10:41,674][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-14 01:12:35,909][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:1
+[2026-01-14 01:12:36,796][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmprt2jn3rm/test.c -o /data2/zq/conda_environment/tmp/tmprt2jn3rm/test.o
+[2026-01-14 01:12:36,894][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmprt2jn3rm/test.o -laio -o /data2/zq/conda_environment/tmp/tmprt2jn3rm/a.out
+[2026-01-14 01:12:37,409][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpg30lvzrn/test.c -o /data2/zq/conda_environment/tmp/tmpg30lvzrn/test.o
+[2026-01-14 01:12:37,625][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpg30lvzrn/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpg30lvzrn/a.out
+[2026-01-14 02:24:57,041][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-14 02:24:57,409][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-14 02:27:07,134][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:6
+[2026-01-14 02:27:08,014][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpfzldtawd/test.c -o /data2/zq/conda_environment/tmp/tmpfzldtawd/test.o
+[2026-01-14 02:27:08,034][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpfzldtawd/test.o -laio -o /data2/zq/conda_environment/tmp/tmpfzldtawd/a.out
+[2026-01-14 02:27:08,691][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpkasdxh64/test.c -o /data2/zq/conda_environment/tmp/tmpkasdxh64/test.o
+[2026-01-14 02:27:08,716][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpkasdxh64/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpkasdxh64/a.out
+[2026-01-14 03:19:58,525][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-14 03:19:58,526][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-14 03:21:46,308][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:6
+[2026-01-14 03:21:46,916][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpjy4t7tzc/test.c -o /data2/zq/conda_environment/tmp/tmpjy4t7tzc/test.o
+[2026-01-14 03:21:46,958][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpjy4t7tzc/test.o -laio -o /data2/zq/conda_environment/tmp/tmpjy4t7tzc/a.out
+[2026-01-14 03:21:47,366][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpgo6a849t/test.c -o /data2/zq/conda_environment/tmp/tmpgo6a849t/test.o
+[2026-01-14 03:21:47,408][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpgo6a849t/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpgo6a849t/a.out
+[2026-01-14 04:15:05,226][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-14 04:15:05,226][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-14 04:17:07,879][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:0
+[2026-01-14 04:17:08,539][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpuikq5e50/test.c -o /data2/zq/conda_environment/tmp/tmpuikq5e50/test.o
+[2026-01-14 04:17:08,560][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpuikq5e50/test.o -laio -o /data2/zq/conda_environment/tmp/tmpuikq5e50/a.out
+[2026-01-14 04:17:09,218][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpu36ux4oj/test.c -o /data2/zq/conda_environment/tmp/tmpu36ux4oj/test.o
+[2026-01-14 04:17:09,260][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpu36ux4oj/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpu36ux4oj/a.out
+[2026-01-14 05:12:30,338][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-14 05:12:30,368][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-14 05:14:16,577][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:5
+[2026-01-14 05:14:17,300][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmp7gj_1t19/test.c -o /data2/zq/conda_environment/tmp/tmp7gj_1t19/test.o
+[2026-01-14 05:14:17,331][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmp7gj_1t19/test.o -laio -o /data2/zq/conda_environment/tmp/tmp7gj_1t19/a.out
+[2026-01-14 05:14:17,706][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpbx3nuphm/test.c -o /data2/zq/conda_environment/tmp/tmpbx3nuphm/test.o
+[2026-01-14 05:14:17,734][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpbx3nuphm/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpbx3nuphm/a.out
+[2026-01-14 06:10:33,885][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-14 06:10:34,102][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-14 06:12:22,591][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:6
+[2026-01-14 06:12:23,240][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmphah7hub3/test.c -o /data2/zq/conda_environment/tmp/tmphah7hub3/test.o
+[2026-01-14 06:12:23,259][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmphah7hub3/test.o -laio -o /data2/zq/conda_environment/tmp/tmphah7hub3/a.out
+[2026-01-14 06:12:23,615][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpsnlev53_/test.c -o /data2/zq/conda_environment/tmp/tmpsnlev53_/test.o
+[2026-01-14 06:12:23,640][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpsnlev53_/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpsnlev53_/a.out
+[2026-01-14 11:51:56,890][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-14 11:51:57,472][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-14 11:51:58,897][multiflow.models.flow_module][INFO] - Skipping instance [3] length 70
+[2026-01-14 11:51:58,898][multiflow.models.flow_module][INFO] - Skipping instance [7] length 70
+[2026-01-14 11:51:58,899][multiflow.models.flow_module][INFO] - Skipping instance [11] length 70
+[2026-01-14 11:51:58,899][multiflow.models.flow_module][INFO] - Skipping instance [15] length 70
+[2026-01-14 11:51:58,900][multiflow.models.flow_module][INFO] - Skipping instance [19] length 70
+[2026-01-14 11:51:58,901][multiflow.models.flow_module][INFO] - Skipping instance [23] length 70
+[2026-01-14 11:53:43,260][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:5
+[2026-01-14 11:53:43,896][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpd8cfgq7m/test.c -o /data2/zq/conda_environment/tmp/tmpd8cfgq7m/test.o
+[2026-01-14 11:53:43,918][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpd8cfgq7m/test.o -laio -o /data2/zq/conda_environment/tmp/tmpd8cfgq7m/a.out
+[2026-01-14 11:53:44,360][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmppzb2kk9i/test.c -o /data2/zq/conda_environment/tmp/tmppzb2kk9i/test.o
+[2026-01-14 11:53:44,391][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmppzb2kk9i/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmppzb2kk9i/a.out
+[2026-01-14 12:29:33,675][multiflow.models.flow_module][INFO] - Skipping instance [3] length 100
+[2026-01-14 12:29:33,676][multiflow.models.flow_module][INFO] - Skipping instance [7] length 100
+[2026-01-14 12:29:33,677][multiflow.models.flow_module][INFO] - Skipping instance [11] length 100
+[2026-01-14 12:29:33,677][multiflow.models.flow_module][INFO] - Skipping instance [15] length 100
+[2026-01-14 12:29:33,678][multiflow.models.flow_module][INFO] - Skipping instance [19] length 100
+[2026-01-14 12:29:33,678][multiflow.models.flow_module][INFO] - Skipping instance [23] length 100
+[2026-01-14 13:07:16,318][multiflow.models.flow_module][INFO] - Skipping instance [3] length 200
+[2026-01-14 13:07:16,319][multiflow.models.flow_module][INFO] - Skipping instance [7] length 200
+[2026-01-14 13:07:16,320][multiflow.models.flow_module][INFO] - Skipping instance [11] length 200
+[2026-01-14 13:07:16,321][multiflow.models.flow_module][INFO] - Skipping instance [15] length 200
+[2026-01-14 13:07:16,321][multiflow.models.flow_module][INFO] - Skipping instance [19] length 200
+[2026-01-14 13:07:16,322][multiflow.models.flow_module][INFO] - Skipping instance [23] length 200
+[2026-01-14 13:48:37,962][multiflow.models.flow_module][INFO] - Skipping instance [3] length 300
+[2026-01-14 13:48:37,963][multiflow.models.flow_module][INFO] - Skipping instance [7] length 300
+[2026-01-14 13:48:37,964][multiflow.models.flow_module][INFO] - Skipping instance [11] length 300
+[2026-01-14 13:48:37,965][multiflow.models.flow_module][INFO] - Skipping instance [15] length 300
+[2026-01-14 13:48:37,965][multiflow.models.flow_module][INFO] - Skipping instance [19] length 300
+[2026-01-14 13:48:37,966][multiflow.models.flow_module][INFO] - Skipping instance [23] length 300
+[2026-01-14 16:26:42,170][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-14 16:26:42,353][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-14 16:26:44,703][multiflow.models.flow_module][INFO] - Skipping instance [3] length 70
+[2026-01-14 16:26:44,705][multiflow.models.flow_module][INFO] - Skipping instance [7] length 70
+[2026-01-14 16:26:44,706][multiflow.models.flow_module][INFO] - Skipping instance [11] length 70
+[2026-01-14 16:26:44,707][multiflow.models.flow_module][INFO] - Skipping instance [15] length 70
+[2026-01-14 16:26:44,707][multiflow.models.flow_module][INFO] - Skipping instance [19] length 70
+[2026-01-14 16:26:44,708][multiflow.models.flow_module][INFO] - Skipping instance [23] length 70
+[2026-01-14 16:26:44,709][multiflow.models.flow_module][INFO] - Skipping instance [27] length 70
+[2026-01-14 16:26:44,709][multiflow.models.flow_module][INFO] - Skipping instance [31] length 70
+[2026-01-14 16:26:44,710][multiflow.models.flow_module][INFO] - Skipping instance [35] length 70
+[2026-01-14 16:26:44,710][multiflow.models.flow_module][INFO] - Skipping instance [39] length 70
+[2026-01-14 16:26:44,711][multiflow.models.flow_module][INFO] - Skipping instance [43] length 70
+[2026-01-14 16:26:44,712][multiflow.models.flow_module][INFO] - Skipping instance [47] length 70
+[2026-01-14 16:26:44,712][multiflow.models.flow_module][INFO] - Skipping instance [51] length 70
+[2026-01-14 16:26:44,713][multiflow.models.flow_module][INFO] - Skipping instance [55] length 70
+[2026-01-14 16:26:44,713][multiflow.models.flow_module][INFO] - Skipping instance [59] length 70
+[2026-01-14 16:26:44,714][multiflow.models.flow_module][INFO] - Skipping instance [63] length 70
+[2026-01-14 16:26:44,714][multiflow.models.flow_module][INFO] - Skipping instance [67] length 70
+[2026-01-14 16:26:44,715][multiflow.models.flow_module][INFO] - Skipping instance [71] length 70
+[2026-01-14 16:26:44,716][multiflow.models.flow_module][INFO] - Skipping instance [75] length 70
+[2026-01-14 16:26:44,716][multiflow.models.flow_module][INFO] - Skipping instance [79] length 70
+[2026-01-14 16:26:44,717][multiflow.models.flow_module][INFO] - Skipping instance [83] length 70
+[2026-01-14 16:26:44,717][multiflow.models.flow_module][INFO] - Skipping instance [87] length 70
+[2026-01-14 16:26:44,718][multiflow.models.flow_module][INFO] - Skipping instance [91] length 70
+[2026-01-14 16:26:44,719][multiflow.models.flow_module][INFO] - Skipping instance [95] length 70
+[2026-01-14 16:26:44,719][multiflow.models.flow_module][INFO] - Skipping instance [99] length 70
+[2026-01-14 16:26:44,720][multiflow.models.flow_module][INFO] - Skipping instance [3] length 100
+[2026-01-14 16:26:44,720][multiflow.models.flow_module][INFO] - Skipping instance [7] length 100
+[2026-01-14 16:26:44,721][multiflow.models.flow_module][INFO] - Skipping instance [11] length 100
+[2026-01-14 16:26:44,722][multiflow.models.flow_module][INFO] - Skipping instance [15] length 100
+[2026-01-14 16:26:44,722][multiflow.models.flow_module][INFO] - Skipping instance [19] length 100
+[2026-01-14 16:26:44,723][multiflow.models.flow_module][INFO] - Skipping instance [23] length 100
+[2026-01-14 16:26:44,723][multiflow.models.flow_module][INFO] - Skipping instance [27] length 100
+[2026-01-14 16:26:44,724][multiflow.models.flow_module][INFO] - Skipping instance [31] length 100
+[2026-01-14 16:26:44,725][multiflow.models.flow_module][INFO] - Skipping instance [35] length 100
+[2026-01-14 16:26:44,725][multiflow.models.flow_module][INFO] - Skipping instance [39] length 100
+[2026-01-14 16:26:44,726][multiflow.models.flow_module][INFO] - Skipping instance [43] length 100
+[2026-01-14 16:26:44,726][multiflow.models.flow_module][INFO] - Skipping instance [47] length 100
+[2026-01-14 16:26:44,727][multiflow.models.flow_module][INFO] - Skipping instance [51] length 100
+[2026-01-14 16:26:44,727][multiflow.models.flow_module][INFO] - Skipping instance [55] length 100
+[2026-01-14 16:26:44,728][multiflow.models.flow_module][INFO] - Skipping instance [59] length 100
+[2026-01-14 16:26:44,729][multiflow.models.flow_module][INFO] - Skipping instance [63] length 100
+[2026-01-14 16:26:44,729][multiflow.models.flow_module][INFO] - Skipping instance [67] length 100
+[2026-01-14 16:26:44,730][multiflow.models.flow_module][INFO] - Skipping instance [71] length 100
+[2026-01-14 16:26:44,730][multiflow.models.flow_module][INFO] - Skipping instance [75] length 100
+[2026-01-14 16:26:44,731][multiflow.models.flow_module][INFO] - Skipping instance [79] length 100
+[2026-01-14 16:26:44,731][multiflow.models.flow_module][INFO] - Skipping instance [83] length 100
+[2026-01-14 16:26:44,732][multiflow.models.flow_module][INFO] - Skipping instance [87] length 100
+[2026-01-14 16:26:44,733][multiflow.models.flow_module][INFO] - Skipping instance [91] length 100
+[2026-01-14 16:26:44,733][multiflow.models.flow_module][INFO] - Skipping instance [95] length 100
+[2026-01-14 16:26:44,734][multiflow.models.flow_module][INFO] - Skipping instance [99] length 100
+[2026-01-14 16:26:44,734][multiflow.models.flow_module][INFO] - Skipping instance [3] length 200
+[2026-01-14 16:26:44,735][multiflow.models.flow_module][INFO] - Skipping instance [7] length 200
+[2026-01-14 16:26:44,736][multiflow.models.flow_module][INFO] - Skipping instance [11] length 200
+[2026-01-14 16:26:44,736][multiflow.models.flow_module][INFO] - Skipping instance [15] length 200
+[2026-01-14 16:26:44,737][multiflow.models.flow_module][INFO] - Skipping instance [19] length 200
+[2026-01-14 16:26:44,737][multiflow.models.flow_module][INFO] - Skipping instance [23] length 200
+[2026-01-14 16:26:44,738][multiflow.models.flow_module][INFO] - Skipping instance [27] length 200
+[2026-01-14 16:26:44,738][multiflow.models.flow_module][INFO] - Skipping instance [31] length 200
+[2026-01-14 16:26:44,739][multiflow.models.flow_module][INFO] - Skipping instance [35] length 200
+[2026-01-14 16:26:44,740][multiflow.models.flow_module][INFO] - Skipping instance [39] length 200
+[2026-01-14 16:26:44,741][multiflow.models.flow_module][INFO] - Skipping instance [43] length 200
+[2026-01-14 16:26:44,741][multiflow.models.flow_module][INFO] - Skipping instance [47] length 200
+[2026-01-14 16:26:44,742][multiflow.models.flow_module][INFO] - Skipping instance [51] length 200
+[2026-01-14 16:26:44,742][multiflow.models.flow_module][INFO] - Skipping instance [55] length 200
+[2026-01-14 16:26:44,743][multiflow.models.flow_module][INFO] - Skipping instance [59] length 200
+[2026-01-14 16:26:44,743][multiflow.models.flow_module][INFO] - Skipping instance [63] length 200
+[2026-01-14 16:26:44,744][multiflow.models.flow_module][INFO] - Skipping instance [67] length 200
+[2026-01-14 16:26:44,745][multiflow.models.flow_module][INFO] - Skipping instance [71] length 200
+[2026-01-14 16:26:44,745][multiflow.models.flow_module][INFO] - Skipping instance [75] length 200
+[2026-01-14 16:26:44,746][multiflow.models.flow_module][INFO] - Skipping instance [79] length 200
+[2026-01-14 16:26:44,746][multiflow.models.flow_module][INFO] - Skipping instance [83] length 200
+[2026-01-14 16:26:44,747][multiflow.models.flow_module][INFO] - Skipping instance [87] length 200
+[2026-01-14 16:26:44,748][multiflow.models.flow_module][INFO] - Skipping instance [91] length 200
+[2026-01-14 16:26:44,748][multiflow.models.flow_module][INFO] - Skipping instance [95] length 200
+[2026-01-14 16:26:44,749][multiflow.models.flow_module][INFO] - Skipping instance [99] length 200
+[2026-01-14 16:26:44,749][multiflow.models.flow_module][INFO] - Skipping instance [3] length 300
+[2026-01-14 16:26:44,750][multiflow.models.flow_module][INFO] - Skipping instance [7] length 300
+[2026-01-14 16:26:44,750][multiflow.models.flow_module][INFO] - Skipping instance [11] length 300
+[2026-01-14 16:26:44,751][multiflow.models.flow_module][INFO] - Skipping instance [15] length 300
+[2026-01-14 16:26:44,752][multiflow.models.flow_module][INFO] - Skipping instance [19] length 300
+[2026-01-14 16:26:44,752][multiflow.models.flow_module][INFO] - Skipping instance [23] length 300
+[2026-01-14 16:26:44,753][multiflow.models.flow_module][INFO] - Skipping instance [27] length 300
+[2026-01-14 16:29:55,451][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:4
+[2026-01-14 16:29:56,517][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmp892pukzv/test.c -o /data2/zq/conda_environment/tmp/tmp892pukzv/test.o
+[2026-01-14 16:29:56,770][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmp892pukzv/test.o -laio -o /data2/zq/conda_environment/tmp/tmp892pukzv/a.out
+[2026-01-14 16:29:58,346][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpu2krvy5m/test.c -o /data2/zq/conda_environment/tmp/tmpu2krvy5m/test.o
+[2026-01-14 16:29:58,367][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpu2krvy5m/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpu2krvy5m/a.out
+[2026-01-14 17:30:42,074][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-14 17:30:43,179][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-14 17:33:58,503][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:7
+[2026-01-14 17:33:59,268][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpalfxr2bu/test.c -o /data2/zq/conda_environment/tmp/tmpalfxr2bu/test.o
+[2026-01-14 17:33:59,434][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpalfxr2bu/test.o -laio -o /data2/zq/conda_environment/tmp/tmpalfxr2bu/a.out
+[2026-01-14 17:34:00,168][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmp8md6fy_c/test.c -o /data2/zq/conda_environment/tmp/tmp8md6fy_c/test.o
+[2026-01-14 17:34:00,459][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmp8md6fy_c/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmp8md6fy_c/a.out
+[2026-01-14 23:27:45,343][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-14 23:27:45,446][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-14 23:30:56,293][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:7
+[2026-01-14 23:31:02,717][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpqcv5ctn6/test.c -o /data2/zq/conda_environment/tmp/tmpqcv5ctn6/test.o
+[2026-01-14 23:31:02,852][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpqcv5ctn6/test.o -laio -o /data2/zq/conda_environment/tmp/tmpqcv5ctn6/a.out
+[2026-01-14 23:31:04,484][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpda05_5kc/test.c -o /data2/zq/conda_environment/tmp/tmpda05_5kc/test.o
+[2026-01-14 23:31:04,530][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpda05_5kc/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpda05_5kc/a.out
+[2026-01-15 12:21:56,915][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-15 12:21:57,652][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-15 12:21:59,908][multiflow.models.flow_module][INFO] - Skipping instance [3] length 70
+[2026-01-15 12:21:59,910][multiflow.models.flow_module][INFO] - Skipping instance [7] length 70
+[2026-01-15 12:21:59,910][multiflow.models.flow_module][INFO] - Skipping instance [11] length 70
+[2026-01-15 12:21:59,911][multiflow.models.flow_module][INFO] - Skipping instance [15] length 70
+[2026-01-15 12:21:59,912][multiflow.models.flow_module][INFO] - Skipping instance [19] length 70
+[2026-01-15 12:21:59,912][multiflow.models.flow_module][INFO] - Skipping instance [23] length 70
+[2026-01-15 12:21:59,913][multiflow.models.flow_module][INFO] - Skipping instance [27] length 70
+[2026-01-15 12:21:59,913][multiflow.models.flow_module][INFO] - Skipping instance [31] length 70
+[2026-01-15 12:21:59,914][multiflow.models.flow_module][INFO] - Skipping instance [35] length 70
+[2026-01-15 12:21:59,914][multiflow.models.flow_module][INFO] - Skipping instance [39] length 70
+[2026-01-15 12:21:59,915][multiflow.models.flow_module][INFO] - Skipping instance [43] length 70
+[2026-01-15 12:21:59,916][multiflow.models.flow_module][INFO] - Skipping instance [47] length 70
+[2026-01-15 12:21:59,917][multiflow.models.flow_module][INFO] - Skipping instance [51] length 70
+[2026-01-15 12:21:59,918][multiflow.models.flow_module][INFO] - Skipping instance [55] length 70
+[2026-01-15 12:21:59,919][multiflow.models.flow_module][INFO] - Skipping instance [59] length 70
+[2026-01-15 12:21:59,919][multiflow.models.flow_module][INFO] - Skipping instance [63] length 70
+[2026-01-15 12:21:59,920][multiflow.models.flow_module][INFO] - Skipping instance [67] length 70
+[2026-01-15 12:21:59,920][multiflow.models.flow_module][INFO] - Skipping instance [71] length 70
+[2026-01-15 12:21:59,921][multiflow.models.flow_module][INFO] - Skipping instance [75] length 70
+[2026-01-15 12:21:59,921][multiflow.models.flow_module][INFO] - Skipping instance [79] length 70
+[2026-01-15 12:21:59,922][multiflow.models.flow_module][INFO] - Skipping instance [83] length 70
+[2026-01-15 12:21:59,923][multiflow.models.flow_module][INFO] - Skipping instance [87] length 70
+[2026-01-15 12:21:59,923][multiflow.models.flow_module][INFO] - Skipping instance [91] length 70
+[2026-01-15 12:21:59,924][multiflow.models.flow_module][INFO] - Skipping instance [95] length 70
+[2026-01-15 12:21:59,924][multiflow.models.flow_module][INFO] - Skipping instance [99] length 70
+[2026-01-15 12:21:59,925][multiflow.models.flow_module][INFO] - Skipping instance [3] length 100
+[2026-01-15 12:21:59,925][multiflow.models.flow_module][INFO] - Skipping instance [7] length 100
+[2026-01-15 12:21:59,926][multiflow.models.flow_module][INFO] - Skipping instance [11] length 100
+[2026-01-15 12:21:59,927][multiflow.models.flow_module][INFO] - Skipping instance [15] length 100
+[2026-01-15 12:21:59,927][multiflow.models.flow_module][INFO] - Skipping instance [19] length 100
+[2026-01-15 12:21:59,928][multiflow.models.flow_module][INFO] - Skipping instance [23] length 100
+[2026-01-15 12:21:59,929][multiflow.models.flow_module][INFO] - Skipping instance [27] length 100
+[2026-01-15 12:21:59,930][multiflow.models.flow_module][INFO] - Skipping instance [31] length 100
+[2026-01-15 12:21:59,931][multiflow.models.flow_module][INFO] - Skipping instance [35] length 100
+[2026-01-15 12:21:59,931][multiflow.models.flow_module][INFO] - Skipping instance [39] length 100
+[2026-01-15 12:21:59,932][multiflow.models.flow_module][INFO] - Skipping instance [43] length 100
+[2026-01-15 12:21:59,932][multiflow.models.flow_module][INFO] - Skipping instance [47] length 100
+[2026-01-15 12:21:59,933][multiflow.models.flow_module][INFO] - Skipping instance [51] length 100
+[2026-01-15 12:21:59,933][multiflow.models.flow_module][INFO] - Skipping instance [55] length 100
+[2026-01-15 12:21:59,934][multiflow.models.flow_module][INFO] - Skipping instance [59] length 100
+[2026-01-15 12:21:59,935][multiflow.models.flow_module][INFO] - Skipping instance [63] length 100
+[2026-01-15 12:21:59,935][multiflow.models.flow_module][INFO] - Skipping instance [67] length 100
+[2026-01-15 12:21:59,936][multiflow.models.flow_module][INFO] - Skipping instance [71] length 100
+[2026-01-15 12:21:59,936][multiflow.models.flow_module][INFO] - Skipping instance [75] length 100
+[2026-01-15 12:21:59,937][multiflow.models.flow_module][INFO] - Skipping instance [79] length 100
+[2026-01-15 12:21:59,937][multiflow.models.flow_module][INFO] - Skipping instance [83] length 100
+[2026-01-15 12:21:59,938][multiflow.models.flow_module][INFO] - Skipping instance [87] length 100
+[2026-01-15 12:21:59,939][multiflow.models.flow_module][INFO] - Skipping instance [91] length 100
+[2026-01-15 12:21:59,939][multiflow.models.flow_module][INFO] - Skipping instance [95] length 100
+[2026-01-15 12:21:59,940][multiflow.models.flow_module][INFO] - Skipping instance [99] length 100
+[2026-01-15 12:21:59,940][multiflow.models.flow_module][INFO] - Skipping instance [3] length 200
+[2026-01-15 12:21:59,941][multiflow.models.flow_module][INFO] - Skipping instance [7] length 200
+[2026-01-15 12:21:59,941][multiflow.models.flow_module][INFO] - Skipping instance [11] length 200
+[2026-01-15 12:21:59,942][multiflow.models.flow_module][INFO] - Skipping instance [15] length 200
+[2026-01-15 12:21:59,943][multiflow.models.flow_module][INFO] - Skipping instance [19] length 200
+[2026-01-15 12:21:59,943][multiflow.models.flow_module][INFO] - Skipping instance [23] length 200
+[2026-01-15 12:21:59,944][multiflow.models.flow_module][INFO] - Skipping instance [27] length 200
+[2026-01-15 12:21:59,944][multiflow.models.flow_module][INFO] - Skipping instance [31] length 200
+[2026-01-15 12:21:59,945][multiflow.models.flow_module][INFO] - Skipping instance [35] length 200
+[2026-01-15 12:21:59,945][multiflow.models.flow_module][INFO] - Skipping instance [39] length 200
+[2026-01-15 12:21:59,946][multiflow.models.flow_module][INFO] - Skipping instance [43] length 200
+[2026-01-15 12:21:59,947][multiflow.models.flow_module][INFO] - Skipping instance [47] length 200
+[2026-01-15 12:21:59,947][multiflow.models.flow_module][INFO] - Skipping instance [51] length 200
+[2026-01-15 12:21:59,948][multiflow.models.flow_module][INFO] - Skipping instance [55] length 200
+[2026-01-15 12:21:59,948][multiflow.models.flow_module][INFO] - Skipping instance [59] length 200
+[2026-01-15 12:21:59,949][multiflow.models.flow_module][INFO] - Skipping instance [63] length 200
+[2026-01-15 12:21:59,949][multiflow.models.flow_module][INFO] - Skipping instance [67] length 200
+[2026-01-15 12:21:59,950][multiflow.models.flow_module][INFO] - Skipping instance [71] length 200
+[2026-01-15 12:21:59,951][multiflow.models.flow_module][INFO] - Skipping instance [75] length 200
+[2026-01-15 12:21:59,951][multiflow.models.flow_module][INFO] - Skipping instance [79] length 200
+[2026-01-15 12:21:59,952][multiflow.models.flow_module][INFO] - Skipping instance [83] length 200
+[2026-01-15 12:21:59,952][multiflow.models.flow_module][INFO] - Skipping instance [87] length 200
+[2026-01-15 12:21:59,953][multiflow.models.flow_module][INFO] - Skipping instance [91] length 200
+[2026-01-15 12:21:59,953][multiflow.models.flow_module][INFO] - Skipping instance [95] length 200
+[2026-01-15 12:21:59,954][multiflow.models.flow_module][INFO] - Skipping instance [99] length 200
+[2026-01-15 12:21:59,955][multiflow.models.flow_module][INFO] - Skipping instance [3] length 300
+[2026-01-15 12:21:59,955][multiflow.models.flow_module][INFO] - Skipping instance [7] length 300
+[2026-01-15 12:21:59,956][multiflow.models.flow_module][INFO] - Skipping instance [11] length 300
+[2026-01-15 12:21:59,956][multiflow.models.flow_module][INFO] - Skipping instance [15] length 300
+[2026-01-15 12:21:59,957][multiflow.models.flow_module][INFO] - Skipping instance [19] length 300
+[2026-01-15 12:21:59,957][multiflow.models.flow_module][INFO] - Skipping instance [23] length 300
+[2026-01-15 12:21:59,958][multiflow.models.flow_module][INFO] - Skipping instance [27] length 300
+[2026-01-15 12:21:59,959][multiflow.models.flow_module][INFO] - Skipping instance [31] length 300
+[2026-01-15 12:21:59,959][multiflow.models.flow_module][INFO] - Skipping instance [35] length 300
+[2026-01-15 12:21:59,960][multiflow.models.flow_module][INFO] - Skipping instance [39] length 300
+[2026-01-15 12:21:59,960][multiflow.models.flow_module][INFO] - Skipping instance [43] length 300
+[2026-01-15 12:21:59,961][multiflow.models.flow_module][INFO] - Skipping instance [47] length 300
+[2026-01-15 12:21:59,961][multiflow.models.flow_module][INFO] - Skipping instance [51] length 300
+[2026-01-15 12:21:59,962][multiflow.models.flow_module][INFO] - Skipping instance [55] length 300
+[2026-01-15 12:21:59,963][multiflow.models.flow_module][INFO] - Skipping instance [59] length 300
+[2026-01-15 12:21:59,963][multiflow.models.flow_module][INFO] - Skipping instance [63] length 300
+[2026-01-15 12:21:59,964][multiflow.models.flow_module][INFO] - Skipping instance [67] length 300
+[2026-01-15 12:21:59,964][multiflow.models.flow_module][INFO] - Skipping instance [71] length 300
+[2026-01-15 12:21:59,965][multiflow.models.flow_module][INFO] - Skipping instance [75] length 300
+[2026-01-15 12:21:59,966][multiflow.models.flow_module][INFO] - Skipping instance [79] length 300
+[2026-01-15 12:21:59,966][multiflow.models.flow_module][INFO] - Skipping instance [83] length 300
+[2026-01-15 12:21:59,967][multiflow.models.flow_module][INFO] - Skipping instance [87] length 300
+[2026-01-15 12:21:59,967][multiflow.models.flow_module][INFO] - Skipping instance [91] length 300
+[2026-01-15 12:21:59,968][multiflow.models.flow_module][INFO] - Skipping instance [95] length 300
+[2026-01-15 12:21:59,968][multiflow.models.flow_module][INFO] - Skipping instance [99] length 300
+[2026-01-15 12:23:08,585][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-15 12:23:08,586][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-15 12:23:10,528][multiflow.models.flow_module][INFO] - Skipping instance [3] length 70
+[2026-01-15 12:23:10,530][multiflow.models.flow_module][INFO] - Skipping instance [7] length 70
+[2026-01-15 12:23:10,531][multiflow.models.flow_module][INFO] - Skipping instance [11] length 70
+[2026-01-15 12:23:10,531][multiflow.models.flow_module][INFO] - Skipping instance [15] length 70
+[2026-01-15 12:23:10,532][multiflow.models.flow_module][INFO] - Skipping instance [19] length 70
+[2026-01-15 12:23:10,532][multiflow.models.flow_module][INFO] - Skipping instance [23] length 70
+[2026-01-15 12:23:10,533][multiflow.models.flow_module][INFO] - Skipping instance [27] length 70
+[2026-01-15 12:23:10,534][multiflow.models.flow_module][INFO] - Skipping instance [31] length 70
+[2026-01-15 12:23:10,534][multiflow.models.flow_module][INFO] - Skipping instance [35] length 70
+[2026-01-15 12:23:10,535][multiflow.models.flow_module][INFO] - Skipping instance [39] length 70
+[2026-01-15 12:23:10,535][multiflow.models.flow_module][INFO] - Skipping instance [43] length 70
+[2026-01-15 12:23:10,536][multiflow.models.flow_module][INFO] - Skipping instance [47] length 70
+[2026-01-15 12:23:10,536][multiflow.models.flow_module][INFO] - Skipping instance [51] length 70
+[2026-01-15 12:23:10,537][multiflow.models.flow_module][INFO] - Skipping instance [55] length 70
+[2026-01-15 12:23:10,538][multiflow.models.flow_module][INFO] - Skipping instance [59] length 70
+[2026-01-15 12:23:10,538][multiflow.models.flow_module][INFO] - Skipping instance [63] length 70
+[2026-01-15 12:23:10,539][multiflow.models.flow_module][INFO] - Skipping instance [67] length 70
+[2026-01-15 12:23:10,539][multiflow.models.flow_module][INFO] - Skipping instance [71] length 70
+[2026-01-15 12:23:10,540][multiflow.models.flow_module][INFO] - Skipping instance [75] length 70
+[2026-01-15 12:23:10,541][multiflow.models.flow_module][INFO] - Skipping instance [79] length 70
+[2026-01-15 12:23:10,541][multiflow.models.flow_module][INFO] - Skipping instance [83] length 70
+[2026-01-15 12:23:10,542][multiflow.models.flow_module][INFO] - Skipping instance [87] length 70
+[2026-01-15 12:23:10,542][multiflow.models.flow_module][INFO] - Skipping instance [91] length 70
+[2026-01-15 12:23:10,543][multiflow.models.flow_module][INFO] - Skipping instance [95] length 70
+[2026-01-15 12:23:10,543][multiflow.models.flow_module][INFO] - Skipping instance [99] length 70
+[2026-01-15 12:23:10,544][multiflow.models.flow_module][INFO] - Skipping instance [3] length 100
+[2026-01-15 12:23:10,545][multiflow.models.flow_module][INFO] - Skipping instance [7] length 100
+[2026-01-15 12:23:10,545][multiflow.models.flow_module][INFO] - Skipping instance [11] length 100
+[2026-01-15 12:23:10,546][multiflow.models.flow_module][INFO] - Skipping instance [15] length 100
+[2026-01-15 12:23:10,546][multiflow.models.flow_module][INFO] - Skipping instance [19] length 100
+[2026-01-15 12:23:10,547][multiflow.models.flow_module][INFO] - Skipping instance [23] length 100
+[2026-01-15 12:23:10,547][multiflow.models.flow_module][INFO] - Skipping instance [27] length 100
+[2026-01-15 12:23:10,548][multiflow.models.flow_module][INFO] - Skipping instance [31] length 100
+[2026-01-15 12:23:10,549][multiflow.models.flow_module][INFO] - Skipping instance [35] length 100
+[2026-01-15 12:23:10,549][multiflow.models.flow_module][INFO] - Skipping instance [39] length 100
+[2026-01-15 12:23:10,550][multiflow.models.flow_module][INFO] - Skipping instance [43] length 100
+[2026-01-15 12:23:10,550][multiflow.models.flow_module][INFO] - Skipping instance [47] length 100
+[2026-01-15 12:23:10,551][multiflow.models.flow_module][INFO] - Skipping instance [51] length 100
+[2026-01-15 12:23:10,551][multiflow.models.flow_module][INFO] - Skipping instance [55] length 100
+[2026-01-15 12:23:10,552][multiflow.models.flow_module][INFO] - Skipping instance [59] length 100
+[2026-01-15 12:23:10,553][multiflow.models.flow_module][INFO] - Skipping instance [63] length 100
+[2026-01-15 12:23:10,553][multiflow.models.flow_module][INFO] - Skipping instance [67] length 100
+[2026-01-15 12:23:10,554][multiflow.models.flow_module][INFO] - Skipping instance [71] length 100
+[2026-01-15 12:23:10,554][multiflow.models.flow_module][INFO] - Skipping instance [75] length 100
+[2026-01-15 12:23:10,555][multiflow.models.flow_module][INFO] - Skipping instance [79] length 100
+[2026-01-15 12:23:10,555][multiflow.models.flow_module][INFO] - Skipping instance [83] length 100
+[2026-01-15 12:23:10,556][multiflow.models.flow_module][INFO] - Skipping instance [87] length 100
+[2026-01-15 12:23:10,557][multiflow.models.flow_module][INFO] - Skipping instance [91] length 100
+[2026-01-15 12:23:10,557][multiflow.models.flow_module][INFO] - Skipping instance [95] length 100
+[2026-01-15 12:23:10,558][multiflow.models.flow_module][INFO] - Skipping instance [99] length 100
+[2026-01-15 12:23:10,558][multiflow.models.flow_module][INFO] - Skipping instance [3] length 200
+[2026-01-15 12:23:10,559][multiflow.models.flow_module][INFO] - Skipping instance [7] length 200
+[2026-01-15 12:23:10,560][multiflow.models.flow_module][INFO] - Skipping instance [11] length 200
+[2026-01-15 12:23:10,561][multiflow.models.flow_module][INFO] - Skipping instance [15] length 200
+[2026-01-15 12:23:10,562][multiflow.models.flow_module][INFO] - Skipping instance [19] length 200
+[2026-01-15 12:23:10,562][multiflow.models.flow_module][INFO] - Skipping instance [23] length 200
+[2026-01-15 12:23:10,564][multiflow.models.flow_module][INFO] - Skipping instance [27] length 200
+[2026-01-15 12:23:10,564][multiflow.models.flow_module][INFO] - Skipping instance [31] length 200
+[2026-01-15 12:23:10,565][multiflow.models.flow_module][INFO] - Skipping instance [35] length 200
+[2026-01-15 12:23:10,565][multiflow.models.flow_module][INFO] - Skipping instance [39] length 200
+[2026-01-15 12:23:10,566][multiflow.models.flow_module][INFO] - Skipping instance [43] length 200
+[2026-01-15 12:23:10,566][multiflow.models.flow_module][INFO] - Skipping instance [47] length 200
+[2026-01-15 12:23:10,567][multiflow.models.flow_module][INFO] - Skipping instance [51] length 200
+[2026-01-15 12:23:10,568][multiflow.models.flow_module][INFO] - Skipping instance [55] length 200
+[2026-01-15 12:23:10,568][multiflow.models.flow_module][INFO] - Skipping instance [59] length 200
+[2026-01-15 12:23:10,569][multiflow.models.flow_module][INFO] - Skipping instance [63] length 200
+[2026-01-15 12:23:10,569][multiflow.models.flow_module][INFO] - Skipping instance [67] length 200
+[2026-01-15 12:23:10,570][multiflow.models.flow_module][INFO] - Skipping instance [71] length 200
+[2026-01-15 12:23:10,570][multiflow.models.flow_module][INFO] - Skipping instance [75] length 200
+[2026-01-15 12:23:10,571][multiflow.models.flow_module][INFO] - Skipping instance [79] length 200
+[2026-01-15 12:23:10,572][multiflow.models.flow_module][INFO] - Skipping instance [83] length 200
+[2026-01-15 12:23:10,572][multiflow.models.flow_module][INFO] - Skipping instance [87] length 200
+[2026-01-15 12:23:10,573][multiflow.models.flow_module][INFO] - Skipping instance [91] length 200
+[2026-01-15 12:23:10,573][multiflow.models.flow_module][INFO] - Skipping instance [95] length 200
+[2026-01-15 12:23:10,574][multiflow.models.flow_module][INFO] - Skipping instance [99] length 200
+[2026-01-15 12:23:10,574][multiflow.models.flow_module][INFO] - Skipping instance [3] length 300
+[2026-01-15 12:23:10,575][multiflow.models.flow_module][INFO] - Skipping instance [7] length 300
+[2026-01-15 12:23:10,576][multiflow.models.flow_module][INFO] - Skipping instance [11] length 300
+[2026-01-15 12:23:10,576][multiflow.models.flow_module][INFO] - Skipping instance [15] length 300
+[2026-01-15 12:23:10,577][multiflow.models.flow_module][INFO] - Skipping instance [19] length 300
+[2026-01-15 12:26:10,019][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:7
+[2026-01-15 12:26:11,090][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpek1966dk/test.c -o /data2/zq/conda_environment/tmp/tmpek1966dk/test.o
+[2026-01-15 12:26:11,340][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpek1966dk/test.o -laio -o /data2/zq/conda_environment/tmp/tmpek1966dk/a.out
+[2026-01-15 12:26:11,786][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmptdjge6hn/test.c -o /data2/zq/conda_environment/tmp/tmptdjge6hn/test.o
+[2026-01-15 12:26:11,817][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmptdjge6hn/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmptdjge6hn/a.out
+[2026-01-15 13:27:09,374][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-15 13:27:10,318][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-15 13:28:57,986][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:7
+[2026-01-15 13:28:58,661][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpxd_p9sbb/test.c -o /data2/zq/conda_environment/tmp/tmpxd_p9sbb/test.o
+[2026-01-15 13:28:58,707][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpxd_p9sbb/test.o -laio -o /data2/zq/conda_environment/tmp/tmpxd_p9sbb/a.out
+[2026-01-15 13:28:59,168][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpfgf58lce/test.c -o /data2/zq/conda_environment/tmp/tmpfgf58lce/test.o
+[2026-01-15 13:28:59,217][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpfgf58lce/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpfgf58lce/a.out
+[2026-01-15 18:45:21,857][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-15 18:45:21,910][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-15 18:49:03,177][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:7
+[2026-01-15 18:49:03,933][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpk1u7nhgj/test.c -o /data2/zq/conda_environment/tmp/tmpk1u7nhgj/test.o
+[2026-01-15 18:49:04,193][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpk1u7nhgj/test.o -laio -o /data2/zq/conda_environment/tmp/tmpk1u7nhgj/a.out
+[2026-01-15 18:49:05,242][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpc4devuhg/test.c -o /data2/zq/conda_environment/tmp/tmpc4devuhg/test.o
+[2026-01-15 18:49:05,391][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpc4devuhg/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpc4devuhg/a.out
+[2026-01-15 23:31:50,614][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-15 23:31:50,704][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-15 23:31:55,804][multiflow.models.flow_module][INFO] - Skipping instance [3] length 70
+[2026-01-15 23:31:55,805][multiflow.models.flow_module][INFO] - Skipping instance [7] length 70
+[2026-01-15 23:31:55,806][multiflow.models.flow_module][INFO] - Skipping instance [11] length 70
+[2026-01-15 23:31:55,807][multiflow.models.flow_module][INFO] - Skipping instance [15] length 70
+[2026-01-15 23:31:55,807][multiflow.models.flow_module][INFO] - Skipping instance [19] length 70
+[2026-01-15 23:31:55,808][multiflow.models.flow_module][INFO] - Skipping instance [23] length 70
+[2026-01-15 23:31:55,808][multiflow.models.flow_module][INFO] - Skipping instance [27] length 70
+[2026-01-15 23:31:55,809][multiflow.models.flow_module][INFO] - Skipping instance [31] length 70
+[2026-01-15 23:31:55,810][multiflow.models.flow_module][INFO] - Skipping instance [35] length 70
+[2026-01-15 23:31:55,810][multiflow.models.flow_module][INFO] - Skipping instance [39] length 70
+[2026-01-15 23:31:55,811][multiflow.models.flow_module][INFO] - Skipping instance [43] length 70
+[2026-01-15 23:31:55,812][multiflow.models.flow_module][INFO] - Skipping instance [47] length 70
+[2026-01-15 23:31:55,812][multiflow.models.flow_module][INFO] - Skipping instance [51] length 70
+[2026-01-15 23:31:55,813][multiflow.models.flow_module][INFO] - Skipping instance [55] length 70
+[2026-01-15 23:31:55,814][multiflow.models.flow_module][INFO] - Skipping instance [59] length 70
+[2026-01-15 23:31:55,814][multiflow.models.flow_module][INFO] - Skipping instance [63] length 70
+[2026-01-15 23:31:55,815][multiflow.models.flow_module][INFO] - Skipping instance [67] length 70
+[2026-01-15 23:31:55,815][multiflow.models.flow_module][INFO] - Skipping instance [71] length 70
+[2026-01-15 23:31:55,816][multiflow.models.flow_module][INFO] - Skipping instance [75] length 70
+[2026-01-15 23:31:55,817][multiflow.models.flow_module][INFO] - Skipping instance [79] length 70
+[2026-01-15 23:31:55,817][multiflow.models.flow_module][INFO] - Skipping instance [83] length 70
+[2026-01-15 23:31:55,818][multiflow.models.flow_module][INFO] - Skipping instance [87] length 70
+[2026-01-15 23:31:55,819][multiflow.models.flow_module][INFO] - Skipping instance [91] length 70
+[2026-01-15 23:31:55,819][multiflow.models.flow_module][INFO] - Skipping instance [95] length 70
+[2026-01-15 23:31:55,820][multiflow.models.flow_module][INFO] - Skipping instance [99] length 70
+[2026-01-15 23:31:55,820][multiflow.models.flow_module][INFO] - Skipping instance [3] length 100
+[2026-01-15 23:31:55,821][multiflow.models.flow_module][INFO] - Skipping instance [7] length 100
+[2026-01-15 23:31:55,822][multiflow.models.flow_module][INFO] - Skipping instance [11] length 100
+[2026-01-15 23:31:55,822][multiflow.models.flow_module][INFO] - Skipping instance [15] length 100
+[2026-01-15 23:31:55,823][multiflow.models.flow_module][INFO] - Skipping instance [19] length 100
+[2026-01-15 23:31:55,824][multiflow.models.flow_module][INFO] - Skipping instance [23] length 100
+[2026-01-15 23:31:55,824][multiflow.models.flow_module][INFO] - Skipping instance [27] length 100
+[2026-01-15 23:31:55,825][multiflow.models.flow_module][INFO] - Skipping instance [31] length 100
+[2026-01-15 23:31:55,825][multiflow.models.flow_module][INFO] - Skipping instance [35] length 100
+[2026-01-15 23:31:55,826][multiflow.models.flow_module][INFO] - Skipping instance [39] length 100
+[2026-01-15 23:31:55,827][multiflow.models.flow_module][INFO] - Skipping instance [43] length 100
+[2026-01-15 23:31:55,827][multiflow.models.flow_module][INFO] - Skipping instance [47] length 100
+[2026-01-15 23:31:55,828][multiflow.models.flow_module][INFO] - Skipping instance [51] length 100
+[2026-01-15 23:31:55,829][multiflow.models.flow_module][INFO] - Skipping instance [55] length 100
+[2026-01-15 23:31:55,829][multiflow.models.flow_module][INFO] - Skipping instance [59] length 100
+[2026-01-15 23:31:55,830][multiflow.models.flow_module][INFO] - Skipping instance [63] length 100
+[2026-01-15 23:31:55,831][multiflow.models.flow_module][INFO] - Skipping instance [67] length 100
+[2026-01-15 23:31:55,831][multiflow.models.flow_module][INFO] - Skipping instance [71] length 100
+[2026-01-15 23:31:55,832][multiflow.models.flow_module][INFO] - Skipping instance [75] length 100
+[2026-01-15 23:31:55,832][multiflow.models.flow_module][INFO] - Skipping instance [79] length 100
+[2026-01-15 23:31:55,833][multiflow.models.flow_module][INFO] - Skipping instance [83] length 100
+[2026-01-15 23:31:55,834][multiflow.models.flow_module][INFO] - Skipping instance [87] length 100
+[2026-01-15 23:31:55,834][multiflow.models.flow_module][INFO] - Skipping instance [91] length 100
+[2026-01-15 23:31:55,835][multiflow.models.flow_module][INFO] - Skipping instance [95] length 100
+[2026-01-15 23:31:55,836][multiflow.models.flow_module][INFO] - Skipping instance [99] length 100
+[2026-01-15 23:31:55,836][multiflow.models.flow_module][INFO] - Skipping instance [3] length 200
+[2026-01-15 23:31:55,837][multiflow.models.flow_module][INFO] - Skipping instance [7] length 200
+[2026-01-15 23:31:55,837][multiflow.models.flow_module][INFO] - Skipping instance [11] length 200
+[2026-01-15 23:31:55,838][multiflow.models.flow_module][INFO] - Skipping instance [15] length 200
+[2026-01-15 23:31:55,839][multiflow.models.flow_module][INFO] - Skipping instance [19] length 200
+[2026-01-15 23:31:55,839][multiflow.models.flow_module][INFO] - Skipping instance [23] length 200
+[2026-01-15 23:31:55,840][multiflow.models.flow_module][INFO] - Skipping instance [27] length 200
+[2026-01-15 23:31:55,841][multiflow.models.flow_module][INFO] - Skipping instance [31] length 200
+[2026-01-15 23:31:55,841][multiflow.models.flow_module][INFO] - Skipping instance [35] length 200
+[2026-01-15 23:31:55,842][multiflow.models.flow_module][INFO] - Skipping instance [39] length 200
+[2026-01-15 23:31:55,843][multiflow.models.flow_module][INFO] - Skipping instance [43] length 200
+[2026-01-15 23:31:55,843][multiflow.models.flow_module][INFO] - Skipping instance [47] length 200
+[2026-01-15 23:31:55,844][multiflow.models.flow_module][INFO] - Skipping instance [51] length 200
+[2026-01-15 23:31:55,844][multiflow.models.flow_module][INFO] - Skipping instance [55] length 200
+[2026-01-15 23:31:55,845][multiflow.models.flow_module][INFO] - Skipping instance [59] length 200
+[2026-01-15 23:31:55,846][multiflow.models.flow_module][INFO] - Skipping instance [63] length 200
+[2026-01-15 23:31:55,846][multiflow.models.flow_module][INFO] - Skipping instance [67] length 200
+[2026-01-15 23:31:55,847][multiflow.models.flow_module][INFO] - Skipping instance [71] length 200
+[2026-01-15 23:31:55,848][multiflow.models.flow_module][INFO] - Skipping instance [75] length 200
+[2026-01-15 23:31:55,848][multiflow.models.flow_module][INFO] - Skipping instance [79] length 200
+[2026-01-15 23:31:55,849][multiflow.models.flow_module][INFO] - Skipping instance [83] length 200
+[2026-01-15 23:31:55,849][multiflow.models.flow_module][INFO] - Skipping instance [87] length 200
+[2026-01-15 23:31:55,850][multiflow.models.flow_module][INFO] - Skipping instance [91] length 200
+[2026-01-15 23:31:55,851][multiflow.models.flow_module][INFO] - Skipping instance [95] length 200
+[2026-01-15 23:31:55,851][multiflow.models.flow_module][INFO] - Skipping instance [99] length 200
+[2026-01-15 23:31:55,852][multiflow.models.flow_module][INFO] - Skipping instance [3] length 300
+[2026-01-15 23:31:55,853][multiflow.models.flow_module][INFO] - Skipping instance [7] length 300
+[2026-01-15 23:31:55,853][multiflow.models.flow_module][INFO] - Skipping instance [11] length 300
+[2026-01-15 23:31:55,854][multiflow.models.flow_module][INFO] - Skipping instance [15] length 300
+[2026-01-15 23:31:55,854][multiflow.models.flow_module][INFO] - Skipping instance [19] length 300
+[2026-01-15 23:31:55,855][multiflow.models.flow_module][INFO] - Skipping instance [23] length 300
+[2026-01-15 23:35:41,280][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:7
+[2026-01-15 23:35:42,900][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpg0ok5x7j/test.c -o /data2/zq/conda_environment/tmp/tmpg0ok5x7j/test.o
+[2026-01-15 23:35:42,939][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpg0ok5x7j/test.o -laio -o /data2/zq/conda_environment/tmp/tmpg0ok5x7j/a.out
+[2026-01-15 23:35:44,313][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmp86bpji6n/test.c -o /data2/zq/conda_environment/tmp/tmp86bpji6n/test.o
+[2026-01-15 23:35:44,365][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmp86bpji6n/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmp86bpji6n/a.out
+[2026-01-16 01:05:54,168][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-16 01:05:54,873][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-16 01:09:02,445][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:6
+[2026-01-16 01:09:04,288][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpb8eyt4am/test.c -o /data2/zq/conda_environment/tmp/tmpb8eyt4am/test.o
+[2026-01-16 01:09:04,861][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpb8eyt4am/test.o -laio -o /data2/zq/conda_environment/tmp/tmpb8eyt4am/a.out
+[2026-01-16 01:09:07,477][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpe03d4mho/test.c -o /data2/zq/conda_environment/tmp/tmpe03d4mho/test.o
+[2026-01-16 01:09:07,522][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpe03d4mho/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpe03d4mho/a.out
+[2026-01-29 10:26:23,048][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-29 10:26:23,331][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-29 10:26:25,238][multiflow.models.flow_module][INFO] - Skipping instance [3] length 70
+[2026-01-29 10:26:25,242][multiflow.models.flow_module][INFO] - Skipping instance [7] length 70
+[2026-01-29 10:26:25,243][multiflow.models.flow_module][INFO] - Skipping instance [11] length 70
+[2026-01-29 10:26:25,245][multiflow.models.flow_module][INFO] - Skipping instance [15] length 70
+[2026-01-29 10:26:25,246][multiflow.models.flow_module][INFO] - Skipping instance [19] length 70
+[2026-01-29 10:26:25,247][multiflow.models.flow_module][INFO] - Skipping instance [23] length 70
+[2026-01-29 10:26:25,249][multiflow.models.flow_module][INFO] - Skipping instance [2] length 100
+[2026-01-29 10:26:25,250][multiflow.models.flow_module][INFO] - Skipping instance [6] length 100
+[2026-01-29 10:26:25,251][multiflow.models.flow_module][INFO] - Skipping instance [10] length 100
+[2026-01-29 10:26:25,252][multiflow.models.flow_module][INFO] - Skipping instance [14] length 100
+[2026-01-29 10:26:25,254][multiflow.models.flow_module][INFO] - Skipping instance [18] length 100
+[2026-01-29 10:26:25,255][multiflow.models.flow_module][INFO] - Skipping instance [22] length 100
+[2026-01-29 10:26:25,256][multiflow.models.flow_module][INFO] - Skipping instance [1] length 200
+[2026-01-29 10:26:25,258][multiflow.models.flow_module][INFO] - Skipping instance [5] length 200
+[2026-01-29 10:26:25,259][multiflow.models.flow_module][INFO] - Skipping instance [9] length 200
+[2026-01-29 10:26:25,260][multiflow.models.flow_module][INFO] - Skipping instance [13] length 200
+[2026-01-29 10:26:25,262][multiflow.models.flow_module][INFO] - Skipping instance [17] length 200
+[2026-01-29 10:26:25,263][multiflow.models.flow_module][INFO] - Skipping instance [21] length 200
+[2026-01-29 10:26:25,264][multiflow.models.flow_module][INFO] - Skipping instance [0] length 300
+[2026-01-29 10:26:25,266][multiflow.models.flow_module][INFO] - Skipping instance [4] length 300
+[2026-01-29 10:26:25,267][multiflow.models.flow_module][INFO] - Skipping instance [8] length 300
+[2026-01-29 10:26:25,267][multiflow.models.flow_module][INFO] - Skipping instance [12] length 300
+[2026-01-29 10:26:25,268][multiflow.models.flow_module][INFO] - Skipping instance [16] length 300
+[2026-01-29 10:26:25,269][multiflow.models.flow_module][INFO] - Skipping instance [20] length 300
+[2026-01-29 10:26:25,269][multiflow.models.flow_module][INFO] - Skipping instance [24] length 300
+[2026-01-29 10:27:26,800][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-29 10:27:27,148][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-29 10:27:58,541][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-01-29 10:27:58,816][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-01-29 10:29:44,832][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:4
+[2026-01-29 10:29:45,429][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpkih61wji/test.c -o /data2/zq/conda_environment/tmp/tmpkih61wji/test.o
+[2026-01-29 10:29:45,456][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpkih61wji/test.o -laio -o /data2/zq/conda_environment/tmp/tmpkih61wji/a.out
+[2026-01-29 10:29:45,811][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpwfaqb00x/test.c -o /data2/zq/conda_environment/tmp/tmpwfaqb00x/test.o
+[2026-01-29 10:29:45,840][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpwfaqb00x/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpwfaqb00x/a.out

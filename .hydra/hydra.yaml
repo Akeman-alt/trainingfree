@@ -111,20 +111,20 @@ hydra:
   overrides:
     hydra:
     - hydra.run.dir="/data1/zq/multiflow"
-    - hydra.job.name=train_ddp_process_3
+    - hydra.job.name=train_ddp_process_2
     - hydra.mode=RUN
     task:
     - inference.num_gpus=4
     - inference.samples.samples_per_length=25
-    - inference.inference_subdir=run_expE_scale5.0_gamma0.1_steps20_kl0.05
-    - inference.interpolant.guidance.struct_scale=5.0
+    - inference.inference_subdir=run_expC_scale1.5_gamma0.1_steps10
+    - inference.interpolant.guidance.struct_scale=1.5
     - inference.interpolant.guidance.gamma=0.1
-    - inference.interpolant.guidance.steps=20
-    - inference.interpolant.guidance.lambda_kl=0.05
+    - inference.interpolant.guidance.steps=10
+    - inference.interpolant.guidance.lambda_kl=0.0
   job:
-    name: train_ddp_process_3
+    name: train_ddp_process_2
     chdir: null
-    override_dirname: inference.inference_subdir=run_expE_scale5.0_gamma0.1_steps20_kl0.05,inference.interpolant.guidance.gamma=0.1,inference.interpolant.guidance.lambda_kl=0.05,inference.interpolant.guidance.steps=20,inference.interpolant.guidance.struct_scale=5.0,inference.num_gpus=4,inference.samples.samples_per_length=25
+    override_dirname: inference.inference_subdir=run_expC_scale1.5_gamma0.1_steps10,inference.interpolant.guidance.gamma=0.1,inference.interpolant.guidance.lambda_kl=0.0,inference.interpolant.guidance.steps=10,inference.interpolant.guidance.struct_scale=1.5,inference.num_gpus=4,inference.samples.samples_per_length=25
     id: ???
     num: ???
     config_name: inference_unconditional
