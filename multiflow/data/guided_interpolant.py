@@ -14,6 +14,9 @@ from torch.distributions.binomial import Binomial
 from omegaconf import OmegaConf
 from torch.profiler import profile, record_function, ProfilerActivity
 
+# [Import] 导入两种 Reward 类
+from multiflow.rewards import MPNNReward, TargetReward
+
 
 def _centered_gaussian(num_batch, num_res, device):
     noise = torch.randn(num_batch, num_res, 3, device=device)
@@ -60,20 +63,27 @@ class GuidedInterpolant:
 
         self.num_tokens = 21 if self._aatypes_cfg.interpolant_type == "masking" else 20
         
+        # 1. 加载配置
         if guidance_config is not None:
             self.guidance_config = guidance_config
         else:
             # 尝试从 hydra 配置节点中读取 'guidance'
-            # 注意：这里的 self._cfg 通常对应 yaml 中的 inference.interpolant 部分
             raw_guidance = self._cfg.get('guidance', None)
-            
             if raw_guidance is not None:
-                # 将 DictConfig 转为普通的 python dict，方便后续 .get() 操作
                 self.guidance_config = OmegaConf.to_container(raw_guidance, resolve=True)
             else:
-                self.guidance_config = None
-        self.reward_fn = reward_fn
+                self.guidance_config = {}
+        
+        # 2. 确定任务类型
+        self.task = self.guidance_config.get('task', 'seq_composition')
+        print(f"📋 [GuidedInterpolant] Current Task: {self.task}")
+
+        # 3. 初始化占位符
+        self.reward_fn = reward_fn 
+        self.mpnn_reward = None
         self.last_theta = None
+        self._device = None
+
     @property
     def igso3(self):
         if self._igso3 is None:
@@ -84,6 +94,34 @@ class GuidedInterpolant:
 
     def set_device(self, device):
         self._device = device
+        
+        use_guidance = getattr(self._cfg.sampling, 'use_ttt_guidance', False)
+        if not use_guidance:
+            return
+
+        print(f"🚀 [GuidedInterpolant] Initializing rewards for task: {self.task} on {device}")
+
+        # --- 分支 A: 结构稳定性 (MPNN) ---
+        if self.task == 'struct_stability':
+            if self.mpnn_reward is None:
+                try:
+                    ca_only = self.guidance_config.get('mpnn_ca_only', False)
+                    self.mpnn_reward = MPNNReward(device, ca_only=ca_only)
+                    # [关键] 让 optimize_logits 也能用 MPNN 作为 reward_fn
+                    self.reward_fn = self.mpnn_reward 
+                    print("✅ MPNNReward loaded successfully and set as reward_fn.")
+                except Exception as e:
+                    print(f"❌ Error loading MPNNReward: {e}")
+        
+        # --- 分支 B: 序列组分 (TargetReward) ---
+        elif self.task == 'seq_composition':
+            if self.reward_fn is None:
+                target_chars = self.guidance_config.get('target_chars', ['A'])
+                try:
+                    self.reward_fn = TargetReward(device, target_chars=target_chars)
+                    print(f"✅ TargetReward loaded for chars: {target_chars}")
+                except Exception as e:
+                    print(f"❌ Error loading TargetReward: {e}")
 
     def sample_t(self, num_batch):
         t = torch.rand(num_batch, device=self._device)
@@ -379,12 +417,6 @@ class GuidedInterpolant:
                                           prob=unmask_probs)
         unmasked_samples = torch.multinomial(pt_x1_probs.view(-1, S-1), num_samples=1).view(batch_size, num_res)
 
-        # Vectorized version of:
-        # for b in range(B):
-        #     for d in range(D):
-        #         if d < number_to_unmask[b]:
-        #             aatypes_t[b, sorted_max_logprobs_idcs[b, d]] = unmasked_samples[b, sorted_max_logprobs_idcs[b, d]]
-
         D_grid = torch.arange(num_res, device=device).view(1, -1).repeat(batch_size, 1)
         mask1 = (D_grid < number_to_unmask.view(-1, 1)).float()
         inital_val_max_logprob_idcs = sorted_max_logprobs_idcs[:, 0].view(-1, 1).repeat(1, num_res)
@@ -403,7 +435,8 @@ class GuidedInterpolant:
         return aatypes_t
     
 
-    def optimize_logits(self, base_logits, reset_theta=False):
+    # [核心修改] optimize_logits 增加 structure 参数
+    def optimize_logits(self, base_logits, structure=None, reset_theta=False):
         """
         核心算法实现，在logits上加入theta并进行优化
         """
@@ -426,97 +459,41 @@ class GuidedInterpolant:
                 self.last_theta.shape != base_logits.shape):
                 theta = torch.zeros_like(base_logits, requires_grad=True, device=device)
             else:
-                # 复用上一步的 theta (Warm Start)
-                # 必须 detach 并开启梯度，作为新的叶子节点
                 theta = self.last_theta.detach().clone().requires_grad_(True)
             optimizer = torch.optim.SGD([theta], lr=gamma)
             
             with torch.no_grad():
                 log_p_base = torch.log_softmax(base_logits, dim=-1)
                 p_base = torch.softmax(base_logits, dim=-1)
-            ## 测试cpu和gpu使用时间
-            # with torch.enable_grad():
-            # # 仅在第一次调用且是第一步时开启 Profile，避免刷屏
-            # # 这里的判断条件你可以自己写灵活点，比如 i==0
-            #     do_profile = True 
-                
-            #     if do_profile:
-            #         # 开启分析器：监听 CPU 和 CUDA
-            #         with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
-            #             for step_idx in range(steps):
-            #                 with record_function("optimization_loop_step"):
-            #                     optimizer.zero_grad()
-                                
-            #                     # 给每个关键操作打标签，方便在报表里看
-            #                     with record_function("calc_logits"):
-            #                         curr_logits = base_logits.detach() + theta
-            #                         log_p_theta = torch.log_softmax(curr_logits, dim=-1)
-            #                         p_theta = torch.exp(log_p_theta)
-                                
-            #                     with record_function("sampling"):
-            #                         p_theta_exp = p_theta.unsqueeze(0).expand(num_samples, -1, -1, -1)
-            #                         dist = Categorical(probs=p_theta_exp)
-            #                         x_samples = dist.sample()
-
-            #                     with record_function("reward_calc"):
-            #                         with torch.no_grad():
-            #                             rewards = self.reward_fn(x_samples) 
-            #                             baseline = rewards.mean(dim=0, keepdim=True)
-            #                             adv = torch.relu(rewards - baseline)
-                                
-            #                     with record_function("backward_step"):
-            #                         log_probs = dist.log_prob(x_samples).sum(dim=-1)
-            #                         loss_reward = - (adv * log_probs).mean()
-            #                         kl_div = torch.sum(p_theta * (log_p_theta - log_p_base), dim=-1).mean()
-            #                         total_loss = loss_reward + lambda_kl * kl_div
-            #                         total_loss.backward()
-            #                         optimizer.step()
-                    
-            #         # 打印分析结果
-            #         print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=15))
-            #         # 也可以导出为 chrome://tracing 可视化文件
-            #         # prof.export_chrome_trace("trace.json")
-            
 
             with torch.enable_grad():
                 for _ in range(steps):
                     optimizer.zero_grad()
-                    
-                    # 1. 计算 p_theta
                     curr_logits = base_logits + theta
                     log_p_theta = torch.log_softmax(curr_logits, dim=-1)
                     p_theta = torch.exp(log_p_theta)
                     
-                    # 2. 采样 N 次用于梯度估计
-                    # Expand: [N_samples, B, L, D]
                     p_theta_exp = p_theta.unsqueeze(0).expand(num_samples, -1, -1, -1)
                     dist = Categorical(probs=p_theta_exp)
                     x_samples = dist.sample() # [N_samples, B, L]
                     
-                    # 3. 计算 Reward (这一步不传梯度)
                     with torch.no_grad():
-                        # 假设 reward_fn 接收 [N*B, L] 或 [N, B, L]
-                        # 这里假设它能处理 batch 维度，返回 [N_samples, B]
-                        rewards = self.reward_fn(x_samples) 
-                        
-                        # 基线消减 (Baseline Subtraction) 减小方差
+                        # [Bugfix & Logic] 
+                        # 如果是 MPNNReward，必须传 structure
+                        # 如果是 TargetReward，不能传 structure (因为它没定义这个参数)
+                        if isinstance(self.reward_fn, MPNNReward):
+                            rewards = self.reward_fn(x_samples, structure=structure)
+                        else:
+                            rewards = self.reward_fn(x_samples)
+                            
                         baseline = rewards.mean(dim=0, keepdim=True)
-                        # 你的公式：ReLU(R - mean)
                         adv = torch.relu(rewards - baseline)
                     
-                    # 4. 计算 Loss
-                    # Policy Gradient 部分: - E[Advantage * log p]
-
-                    log_probs = dist.log_prob(x_samples).sum(dim=-1) # 带有 grad_fn
+                    log_probs = dist.log_prob(x_samples).sum(dim=-1)
                     loss_reward = - (adv * log_probs).mean()
-
-                    # KL 散度约束部分: KL(p_theta || p_base)
-                    # Analytic KL calculation for Categorical
                     kl_div = torch.sum(p_theta * (log_p_theta - log_p_base), dim=-1).mean()
-                    
                     total_loss = loss_reward + lambda_kl * kl_div
                     
-                    # 5. 反向传播与更新
                     total_loss.backward()
                     optimizer.step()
 
@@ -524,10 +501,7 @@ class GuidedInterpolant:
                         with torch.no_grad():
                             theta.clamp_(min=-theta_clamp, max=theta_clamp)
             
-            # --- [逻辑：保存状态] ---
-            # 保存这一步优化好的 theta 供下一步复用
             self.last_theta = theta.detach()
-                
             return (base_logits + theta).detach()
 
     def sample(
@@ -552,11 +526,7 @@ class GuidedInterpolant:
         ):
 
         res_mask = torch.ones(num_batch, num_res, device=self._device)
-        
-        # 重置上一条轨迹
         self.last_theta = None
-
-        # Set-up initial prior samples
 
         if trans_0 is None:
             trans_0 = _centered_gaussian(
@@ -633,7 +603,6 @@ class GuidedInterpolant:
 
         for i, t_2 in enumerate(ts[1:]):
 
-            # Run model.
             if self._trans_cfg.corrupt:
                 batch['trans_t'] = trans_t_1
             else:
@@ -655,13 +624,11 @@ class GuidedInterpolant:
                     raise ValueError('Must provide aatype if not corrupting.')
                 batch['aatypes_t'] = aatypes_1
 
-
             t = torch.ones((num_batch, 1), device=self._device) * t_1
             
             if t_nn is not None:
                 batch['r3_t'], batch['so3_t'], batch['cat_t'] = torch.split(t_nn(t), -1)
             else:
-
                 if self._cfg.provide_kappa:
                     batch['so3_t'] = self.rot_sample_kappa(t)
                 else:
@@ -676,126 +643,94 @@ class GuidedInterpolant:
 
             d_t = t_2 - t_1
 
-
-            # with torch.no_grad():
-            #     model_out = model(batch)
-
-            # # Process model output.
-            # pred_trans_1 = model_out['pred_trans']
-            # pred_rotmats_1 = model_out['pred_rotmats']
-            # pred_aatypes_1 = model_out['pred_aatypes']
-            # pred_logits_1 = model_out['pred_logits']
-
-            # use_guidance = getattr(self._cfg.sampling, 'use_ttt_guidance', False)
-            # if use_guidance:
-                
-            #     # 2. 调用优化函数
-            #     # i==0 时 reset_theta=True，强制从0开始
-            #     # i>0  时 reset_theta=False，自动复用 self.last_theta
-            #     pred_logits_1 = self.optimize_logits(pred_logits_1, reset_theta=(i==0))
-
-
-
-
             # -----------------------------------------------------------
-            # 🟢 [修改开始] 联合流形引导逻辑
+            # 🟢 [核心修改区] 联合流形引导逻辑 (Co-design Logic)
             # -----------------------------------------------------------
             
-            # 0. 检查是否开启 Guidance
             use_guidance = getattr(self._cfg.sampling, 'use_ttt_guidance', False)
-
             grad_context = torch.enable_grad() if use_guidance else torch.no_grad()
 
-            # 1. 准备输入梯度 (如果开启引导，必须让输入可求导)
             if use_guidance:
-                
+                # 关键：让输入结构可求导，无论哪个任务
                 batch['trans_t'] = batch['trans_t'].detach().requires_grad_(True)
 
-            # 2. 模型前向传播 (开启梯度计算)
-            # 注意：即使是推理，为了对输入求导，也必须 enable_grad
             with grad_context:
                 model_out = model(batch)
-
                 pred_trans_1 = model_out['pred_trans']
                 pred_rotmats_1 = model_out['pred_rotmats']
                 pred_aatypes_1 = model_out['pred_aatypes']
                 pred_logits_1 = model_out['pred_logits']
 
-                # 3. 执行引导逻辑
                 if use_guidance:
-                    # A. 序列优化 (Navigate): 算出理想的 Logits
-                    # i==0 时重置 theta，之后复用
-                    guided_logits = self.optimize_logits(pred_logits_1, reset_theta=(i==0))
-                    
-                    # B. 结构对齐 (Tug): 计算让结构适配序列的梯度
-                    # Target: 理想分布 (Detached)
-                    target_probs = torch.softmax(guided_logits.detach(), dim=-1)
-                    # Current: 当前预测 (Attached)
-                    current_log_probs = torch.log_softmax(pred_logits_1, dim=-1)
-                    
-                    # Consistency Loss (Cross Entropy)
-                    loss = -(target_probs * current_log_probs).sum(dim=-1).mean()
+                    loss = None
+                    guided_logits = None
 
+                    # 1. 序列优化 (Navigate) - 所有任务通用
+                    # 对于 struct_stability，因为 reward_fn 设置为了 MPNN，
+                    # 所以 optimize_logits 会利用 MPNN 打分来优化序列
+                    if self.reward_fn is not None:
+                        # [重要] 传入当前预测的骨架 pred_trans_1 给 MPNN 用
+                        guided_logits = self.optimize_logits(pred_logits_1, structure=pred_trans_1, reset_theta=(i==0))
+                    else:
+                        guided_logits = pred_logits_1
 
+                    # 2. 结构引导 (Steer) - 根据任务计算不同的 Loss
                     
-                    # C. 计算对输入结构 trans_t 的梯度
-                    grad_trans = torch.autograd.grad(loss, batch['trans_t'])[0]
-                    
-                    # D. 结构修正 (Steer)
-                    # 读取强度，默认为 5.0
-                    struct_scale = self.guidance_config.get('struct_scale', 1.5)
-                    
-                    # 1. 计算梯度模长 (范数)
-                    # dim=(-1, -2) 是为了对每个样本的整个结构计算模长，而不是对每个原子
-                    grad_norm = torch.norm(grad_trans, dim=(-1, -2), keepdim=True)
-                    
-                    # 2. 梯度归一化 (防止梯度过大或过小)
-                    # 加上 1e-6 防止除以零
-                    # 2. 生成 Sample-wise Mask
-                    # 阈值建议 1e-2，小于这个值说明完全是数值噪声
-                    # 阈值 A: 相对阈值 (过滤掉 Batch 里的"差生")
-                    mean_grad_norm = grad_norm.mean()
-                    rel_threshold = 0.1 * mean_grad_norm
-                    
-                    # 阈值 B: 绝对底噪 (过滤掉 Step 0 的纯噪声)
-                    # 由于 Loss 改成了 Mean，梯度变小了约 L 倍(L~100)。
-                    # 之前的阈值是 1e-4，现在应该对应降到 1e-6 左右。
-                    abs_threshold = 1e-6 
-                    
-                    # 组合 Mask: 既要显著大于同伴，又要显著大于 0
-                    mask = ((grad_norm > rel_threshold) & (grad_norm > abs_threshold)).float()
+                    # --- 任务 A: 结构稳定性 (struct_stability) ---
+                    if self.task == 'struct_stability':
+                        # 使用优化后的序列来指导骨架
+                        target_seq_indices = torch.argmax(guided_logits, dim=-1)
+                        if self.mpnn_reward is not None:
+                            # 算 MPNN Loss (最大化序列在当前骨架上的似然)
+                            mpnn_score = self.mpnn_reward(target_seq_indices, pred_trans_1)
+                            loss = -mpnn_score.mean()
+                            if i % 20 == 0:
+                                print(f"[Step {i}] MPNN Score: {mpnn_score.mean().item():.4f}")
 
-                    # 3. 归一化梯度
-                    normalized_grad = grad_trans / (grad_norm + 1e-6)
-                    time_scaling = (1.0 - t.view(-1, 1, 1))
+                    # --- 任务 B: 序列组分 (seq_composition) ---
+                    elif self.task == 'seq_composition':
+                        # 算一致性 Loss (让骨架去追优化后的序列)
+                        target_probs = torch.softmax(guided_logits.detach(), dim=-1)
+                        current_log_probs = torch.log_softmax(pred_logits_1, dim=-1)
+                        loss = -(target_probs * current_log_probs).sum(dim=-1).mean()
 
-                    # 4. 应用 Mask
-                    # 只有梯度显著的样本才会被引导，其他的保持 0
-                    scaled_grad = normalized_grad * mask * struct_scale * time_scaling
+                    # 3. 统一梯度更新 (Robust Update)
+                    if loss is not None:
+                        # 计算梯度
+                        grad_trans = torch.autograd.grad(loss, batch['trans_t'])[0]
                         
-                    # 3. 施加修正
-                    pred_trans_1 = pred_trans_1.detach() - scaled_grad
-                    # 3. 施加修正
-                    # 此时 struct_scale 的物理意义变成了：
-                    # "如果 gradient 很大，我这一步预测的终点偏移 struct_scale 埃"
-                    # 配合 dt，每一步实际移动 struct_scale * dt 埃
-                    #pred_trans_1 = pred_trans_1.detach() - struct_scale * normalized_grad
-                    
-                    # 4. [强烈建议] 打印一下看看，心里有底
-                    # Debug 打印
-                    if i % 50 == 0:
-                        actual_disp = torch.norm(scaled_grad, dim=(-1, -2)).mean().item()
-                        # 打印实际位移的平均值，确认它随着时间(t变大)在减小
-                        print(f"Step {i}: Avg Displacement = {actual_disp:.4f} Å (Grad Norm: {grad_norm.mean().item():.6f})")
-                                        
-                    # E. 确认序列结果
-                    pred_logits_1 = guided_logits.detach()
+                        # 读取强度
+                        struct_scale = self.guidance_config.get('struct_scale', 1.5)
+                        
+                        # 梯度归一化 & Mask
+                        grad_norm = torch.norm(grad_trans, dim=(-1, -2), keepdim=True)
+                        normalized_grad = grad_trans / (grad_norm + 1e-6)
+                        
+                        mean_grad_norm = grad_norm.mean()
+                        rel_threshold = 0.1 * mean_grad_norm
+                        abs_threshold = 1e-6 
+                        mask = ((grad_norm > rel_threshold) & (grad_norm > abs_threshold)).float()
 
-            # 确保后续逻辑拿到的是 detached 的张量
+                        # 时间衰减
+                        time_scaling = (1.0 - t.view(-1, 1, 1))
+
+                        # 应用修正
+                        scaled_grad = normalized_grad * mask * struct_scale * time_scaling
+                        pred_trans_1 = pred_trans_1.detach() - scaled_grad
+                        
+                        if i % 50 == 0:
+                            actual_disp = torch.norm(scaled_grad, dim=(-1, -2)).mean().item()
+                            print(f"Step {i} [{self.task}]: Avg Disp = {actual_disp:.4f} Å (Grad Norm: {grad_norm.mean().item():.6f})")
+                    
+                    # 4. 更新 Logits (应用序列优化的结果)
+                    if guided_logits is not None:
+                        pred_logits_1 = guided_logits.detach()
+
+            # -----------------------------------------------------------
+            
             pred_trans_1 = pred_trans_1.detach()
             pred_logits_1 = pred_logits_1.detach()
-
-
+            pred_rotmats_1 = pred_rotmats_1.detach()
 
             clean_traj.append((frames_to_atom37(pred_trans_1, pred_rotmats_1), pred_aatypes_1.detach().cpu()))
             if forward_folding:
@@ -803,7 +738,6 @@ class GuidedInterpolant:
             if inverse_folding:
                 pred_trans_1 = trans_1
                 pred_rotmats_1 = rotmats_1
-
 
             if self._cfg.self_condition:
                 batch['trans_sc'] = _trans_diffuse_mask(
@@ -871,4 +805,3 @@ class GuidedInterpolant:
         clean_traj.append((pred_atom37, pred_aatypes_1.detach().cpu()))
         prot_traj.append((pred_atom37, pred_aatypes_1.detach().cpu()))
         return prot_traj, clean_traj
-
