@@ -679,6 +679,25 @@ class GuidedInterpolant:
                     # --- 任务 A: 结构稳定性 (struct_stability) ---
                     if self.task == 'struct_stability':
                         # 使用优化后的序列来指导骨架
+                        
+
+                        # # [新代码] 采样 K 条序列求平均
+                        # K = 8  # 采样次数，建议 4~16
+                        # dist = Categorical(logits=guided_logits)
+                        # target_seq_samples = dist.sample((K,)) 
+                        # # 形状: [K, B, L]
+
+                        # if self.mpnn_reward is not None:
+                        #     # 这里的 pred_trans_1 是 [B, L, 3]
+                        #     # MPNNReward 的 forward 已经修复支持 3D 输入了 (N_samples, B, L)
+                        #     # 它会自动把 structure 广播复制 K 份来计算
+                            
+                        #     # 得到 [K, B] 的分数矩阵
+                        #     mpnn_scores_all = self.mpnn_reward(target_seq_samples, pred_trans_1)
+                            
+                        #     # 先对 K 维求平均 (得到每个 batch 的期望分数)，再对 batch 求平均
+                        #     loss = -mpnn_scores_all.mean(dim=0).mean()
+
                         target_seq_indices = torch.argmax(guided_logits, dim=-1)
                         if self.mpnn_reward is not None:
                             # 算 MPNN Loss (最大化序列在当前骨架上的似然)
