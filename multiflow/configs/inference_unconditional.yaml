@@ -66,6 +66,12 @@ inference:
       struct_scale: 1.5
       mpnn_ca_only: False
       target_chars: ['A']
+      enabled: True
+      num_iters: 5
+      step_size: 0.01
+      momentum: 0.9
+      joint_sequence: True
+      gumbel_temp: 1.0
 
   # Directory of software, weights, and outputs.  
   pmpnn_dir: ./ProteinMPNN

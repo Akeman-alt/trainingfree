@@ -35,10 +35,10 @@ echo "🚀 [3/3] Starting Experiment C: Gamma=0.5, Steps=20, Scale=1.5"
 python -W ignore multiflow/experiments/inference_se3_flows.py -cn inference_unconditional \
     inference.num_gpus=4 \
     inference.samples.samples_per_length=25 \
-    inference.inference_subdir="run_expC_scale1.5_gamma0.5_steps20" \
+    inference.inference_subdir="run_expC_scale1.5_gamma0.1_steps10" \
     inference.interpolant.guidance.struct_scale=1.5 \
-    inference.interpolant.guidance.gamma=0.5 \
-    inference.interpolant.guidance.steps=20 \
+    inference.interpolant.guidance.gamma=0.1 \
+    inference.interpolant.guidance.steps=10 \
     inference.interpolant.guidance.lambda_kl=0.0
 
 echo "✅ All experiments finished!"

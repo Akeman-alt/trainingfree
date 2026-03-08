@@ -19,21 +19,22 @@ echo "----------------------------------------"
 echo "Running Experiment B2: Scale=1.5 (Steps=1)..."
 python -W ignore multiflow/experiments/inference_se3_flows.py -cn inference_unconditional \
     inference.samples.samples_per_length=$SAMPLES \
-    inference.inference_subdir="run_MPNNsoft_Struct_Scale1.5_Steps1" \
+    inference.inference_subdir="run_MPNN_Struct_Scale1.5_Steps1_kl0.01" \
     inference.interpolant.sampling.use_ttt_guidance=True \
     inference.interpolant.guidance.task="struct_stability" \
     inference.interpolant.guidance.struct_scale=1.5 \
     inference.interpolant.guidance.gamma=$GAMMA \
+    inference.interpolant.guidance.lambda_kl=0.01 \
     inference.interpolant.guidance.steps=1 \
     inference.interpolant.guidance.mpnn_ca_only=False
 
 python -W ignore multiflow/experiments/inference_se3_flows.py -cn inference_unconditional \
     inference.samples.samples_per_length=$SAMPLES \
-    inference.inference_subdir="run_MPNNsoft_Struct_Scale1.5_Steps1_N32" \
+    inference.inference_subdir="run_MPNN_Struct_Scale1.5_Steps1_N64" \
     inference.interpolant.sampling.use_ttt_guidance=True \
     inference.interpolant.guidance.task="struct_stability" \
     inference.interpolant.guidance.struct_scale=1.5 \
-    inference.interpolant.guidance.N=32 \
+    inference.interpolant.guidance.N=64 \
     inference.interpolant.guidance.gamma=$GAMMA \
     inference.interpolant.guidance.steps=1 \
     inference.interpolant.guidance.mpnn_ca_only=False

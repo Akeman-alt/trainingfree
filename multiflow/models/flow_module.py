@@ -16,7 +16,8 @@ from multiflow.models.flow_model import FlowModel
 from multiflow.models import utils as mu
 from multiflow.models import folding_model
 from multiflow.data.interpolant import Interpolant 
-from multiflow.data.guided_interpolant import GuidedInterpolant
+#from multiflow.data.guided_interpolant import GuidedInterpolant
+from multiflow.data.ocflow_interpolant import GuidedInterpolant as Interpolant
 from multiflow.data import utils as du
 from multiflow.data import all_atom, so3_utils
 from multiflow.data.residue_constants import restypes, restypes_with_x
@@ -502,7 +503,7 @@ class FlowModule(LightningModule):
 
         # 3. 实例化 GuidedInterpolant
         # 注意：这里我们替换了原来的 Interpolant(...)
-        interpolant = GuidedInterpolant(
+        interpolant = Interpolant(
             self._infer_cfg.interpolant,
             guidance_config=guidance_config,
             reward_fn=my_reward_fn
