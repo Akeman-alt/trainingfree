@@ -5,15 +5,24 @@ from multiflow.data.interpolant import Interpolant, _centered_gaussian, _uniform
 from multiflow.data import utils as du
 from multiflow.data import all_atom
 from multiflow.rewards import MPNNReward
+
 def _trans_diffuse_mask(trans_t, trans_1, diffuse_mask):
     return trans_t * diffuse_mask[..., None] + trans_1 * (1 - diffuse_mask[..., None])
-
 
 def _rots_diffuse_mask(rotmats_t, rotmats_1, diffuse_mask):
     return (
         rotmats_t * diffuse_mask[..., None, None]
         + rotmats_1 * (1 - diffuse_mask[..., None, None])
     )
+
+# ======================================================================
+# 🚨 官方 Trick：极其暴力的步级平方和截断函数（防止 ODE 链式求导梯度爆炸）
+# ======================================================================
+def clip_norm(x, max_norm):
+    norm = x.square().sum(dim=list(range(1, x.ndim)), keepdim=True)
+    cond = norm > max_norm
+    scale = max_norm / (norm + 1e-6)
+    return torch.where(cond, x * scale, x)
 
 class GuidedInterpolant(Interpolant):
     """
@@ -45,6 +54,7 @@ class GuidedInterpolant(Interpolant):
                 self.seed = self.guidance_cfg.get("seed", None)
 
         self.reward_fn = reward_fn
+
     def _compute_reward(self, logits, backbone):
         # sample sequences (no gradient)
         dist = Categorical(logits=logits)
@@ -56,15 +66,12 @@ class GuidedInterpolant(Interpolant):
         # 取多次采样的平均分数 [B]
         reward = scores.mean(dim=0)
 
-        # 🚨 [关键修改]：删除了 reward = reward - reward.mean() 等归一化代码
-        # 因为 B=1 时减去均值会直接变成 0。
-        # 外面的 grad = grad / grad.norm() 已经起到了控制步长的作用。
-
         # NaN protection
         if torch.isnan(reward).any():
             reward = torch.nan_to_num(reward, nan=0.0)
 
         return reward
+
     def sample(
         self,
         num_batch,
@@ -108,7 +115,6 @@ class GuidedInterpolant(Interpolant):
             else:
                 aatypes_0 = torch.randint_like(res_mask, low=0, high=self.num_tokens)
 
-
         if self.reward_fn is None:
             self.reward_fn = MPNNReward(device)
 
@@ -128,29 +134,26 @@ class GuidedInterpolant(Interpolant):
         ts = torch.linspace(self._cfg.min_t, 1.0, num_timesteps, device=device)
 
         frames_to_atom37 = lambda x,y: all_atom.atom37_from_trans_rot(x, y, res_mask).detach().cpu()
-# ==========================================
+
+        # ==========================================
         # 🚨 优化核心：Asynchronous + VJP Adjoint Method
         # ==========================================
-        num_iters = self.num_guidance_iters
-        eta = self.step_size      # 学习率 \eta
-        beta = self.momentum      # 动量衰减 \beta
+        num_iters = getattr(self, 'num_guidance_iters', 5)
+        eta = getattr(self, 'step_size', 0.9)      
+        beta = getattr(self, 'momentum', 1.2)      
         num_steps = len(ts) - 1
         
-        group_size = 5  # 每 5 步共享同一个 \theta 
+        group_size = 5  
         num_thetas = (num_steps + group_size - 1) // group_size 
         
-        # 初始化控制项 \theta (不再需要全局挂载梯度，我们手动维护)
         theta_trans = [torch.zeros_like(trans_0) for _ in range(num_thetas)]
-        
         prot_traj, clean_traj = [], []
         
-        # 确保模型权重是被冻结的，不参与意外的梯度计算占用显存
         for param in model.parameters():
             param.requires_grad_(False)
 
-        # 2. 开启外层循环，进行多轮 OC-Flow 迭代
         for k in range(num_iters):
-            states = [] # 用于极低内存开销保存每一帧的离散状态(路标)
+            states = [] 
             trans_t = trans_0.detach().clone()
             rotmats_t = rotmats_0.detach().clone()
             aatypes_t = aatypes_0.detach().clone()
@@ -158,11 +161,10 @@ class GuidedInterpolant(Interpolant):
             t_prev = ts[0]
             
             # =======================================================
-            # 阶段 1：前向推断 (完全 no_grad，极大节省显存！)
+            # 阶段 1：前向推断 (完全 no_grad，极大节省显存)
             # =======================================================
             with torch.no_grad():
                 for step_idx, t_next in enumerate(ts[1:]):
-                    # 记录当前帧状态
                     states.append({
                         'trans': trans_t.clone(),
                         'rotmats': rotmats_t.clone(),
@@ -188,18 +190,15 @@ class GuidedInterpolant(Interpolant):
                     rotmats_t = self._rots_euler_step(dt, t_prev, pred_rotmats, rotmats_t)
                     aatypes_t = self._aatypes_euler_step(dt, t_prev, pred_logits, aatypes_t)
                     
-                    # 施加控制项
                     theta_idx = step_idx // group_size
                     next_trans_t = next_trans_t + theta_trans[theta_idx] * dt
                     
-                    # 漫反射 mask
                     next_trans_t = _trans_diffuse_mask(next_trans_t, pred_trans, diffuse_mask)
                     rotmats_t = _rots_diffuse_mask(rotmats_t, pred_rotmats, diffuse_mask)
                     
                     trans_t = next_trans_t
                     t_prev = t_next
             
-            # 记录终点状态用于求导
             states.append({
                 'trans': trans_t.clone(),
                 'rotmats': rotmats_t.clone(),
@@ -217,55 +216,45 @@ class GuidedInterpolant(Interpolant):
             with torch.enable_grad():
                 model_out_final = model(batch)
                 pred_trans_final = model_out_final['pred_trans']
-                
-                # 🚨 关键修复：从模型输出中取出 logits
                 pred_logits_final = model_out_final['pred_logits']
                 
-                # 🚨 关键修复：使用你定义的 _compute_reward，传入 logits 和 final_trans
                 reward = self._compute_reward(pred_logits_final, pred_trans_final)
                 
                 if k < num_iters - 1:
-                    # 获取针对 final_trans 的初始梯度
                     grad_x = autograd.grad(reward.sum(), final_trans)[0]
                     
             if not torch.distributed.is_initialized() or torch.distributed.get_rank() == 0:
-                # 🚨 额外：专门计算一个无采样噪声的 Determine Reward 用于观察
                 with torch.no_grad():
-                    # 直接取概率最大的氨基酸序列
-                    det_seq = torch.argmax(pred_logits_final, dim=-1).unsqueeze(0) # [1, B, L]
-                    # 用确定的序列算分数
+                    det_seq = torch.argmax(pred_logits_final, dim=-1).unsqueeze(0) 
                     det_reward = self.reward_fn(det_seq, pred_trans_final.detach()).mean()
                 
-                # 打印真实波动的 Reward 和 稳定的 Deterministic Reward
                 print(f"\n[OC-Flow] Iteration: {k+1}/{num_iters} | Sampled R: {reward.mean().item():.4f} | Det R: {det_reward.item():.4f}", flush=True)
             
             if k == num_iters - 1:
-                # 最后一轮直接收集生成好的轨迹并退出
                 pred_atom37 = frames_to_atom37(pred_trans_final, model_out_final['pred_rotmats'])
                 clean_traj.append((pred_atom37, model_out_final['pred_aatypes'].detach().cpu()))
                 prot_traj.append((pred_atom37, model_out_final['pred_aatypes'].detach().cpu()))
                 break
                 
             # =======================================================
-            # 阶段 3：Vector-Jacobian Product (VJP) 逆向时间反向传播！
+            # 阶段 3：严格对齐官方的 Vector-Jacobian Product (VJP) 
             # =======================================================
             grad_thetas = [torch.zeros_like(th) for th in theta_trans]
+            max_grad_norm = 5.0
             
             with torch.enable_grad():
-                # 从倒数第一步往前走 (Step-by-step backward)
                 for step_idx in reversed(range(num_steps)):
                     curr_state = states[step_idx]
                     t_prev = curr_state['t_prev']
                     t_next = curr_state['t_next']
                     dt = t_next - t_prev
                     
-                    # 重新激活输入张量，准备局部建图
                     curr_trans = curr_state['trans'].detach().requires_grad_(True)
                     curr_rotmats = curr_state['rotmats'].detach()
                     curr_aatypes = curr_state['aatypes'].detach()
                     
                     theta_idx = step_idx // group_size
-                    curr_theta = theta_trans[theta_idx].detach().requires_grad_(True)
+                    curr_theta = theta_trans[theta_idx].detach()
                     
                     batch['trans_t'] = curr_trans
                     batch['rotmats_t'] = curr_rotmats
@@ -273,7 +262,6 @@ class GuidedInterpolant(Interpolant):
                     t_tensor = torch.ones((num_batch,1), device=device) * t_prev
                     batch['r3_t'], batch['so3_t'], batch['cat_t'] = t_tensor, t_tensor, t_tensor
                     
-                    # 仅为这 1 步重建计算图
                     model_out = model(batch)
                     pred_trans = model_out['pred_trans']
                     
@@ -281,35 +269,26 @@ class GuidedInterpolant(Interpolant):
                     next_trans_t = next_trans_t + curr_theta * dt
                     next_trans_t = _trans_diffuse_mask(next_trans_t, pred_trans, diffuse_mask)
                     
-                    # 🚨 核心 VJP：用输出梯度 grad_x 向前推算输入梯度，算完瞬间释放图内存！
+                    # 🚨 核心修复：只对状态 curr_trans 求导，获取精确的共态变量
                     vjp_out = autograd.grad(
                         outputs=next_trans_t,
-                        inputs=(curr_trans, curr_theta),
+                        inputs=curr_trans,
                         grad_outputs=grad_x
                     )
                     
-                    grad_curr_trans, grad_curr_theta = vjp_out[0], vjp_out[1]
+                    # 🚨 核心修复：逐步施加极其严格的平方和惩罚截断
+                    lam = vjp_out[0]
+                    lam = clip_norm(lam, max_grad_norm)
                     
-                    # 累积本时间步对应 \theta 的梯度
-                    grad_thetas[theta_idx] = grad_thetas[theta_idx] + grad_curr_theta
+                    grad_thetas[theta_idx] = grad_thetas[theta_idx] + lam
+                    grad_x = lam
                     
-                    # 把计算出的 x 的梯度传递给上一时间步
-                    grad_x = grad_curr_trans
-                    
-# =======================================================
+            # =======================================================
             # 阶段 4：更新全局控制项 \theta
             # =======================================================
             for i in range(num_thetas):
-                grad_t = torch.nan_to_num(grad_thetas[i])
-                
-                # 🚨 修复：放弃 dim=-1 的残基归一化，采用类似 PyTorch clip_grad_norm_ 的全局裁剪
-                # 这样既能防止梯度爆炸，又能保留不同残基、不同时间步梯度的“相对大小”
-                max_grad_norm = 1.0
-                grad_norm = grad_t.norm() + 1e-6
-                if grad_norm > max_grad_norm:
-                    grad_t = grad_t * (max_grad_norm / grad_norm)
-                
-                # 应用 \theta 动量更新公式（Gradient Ascent, 因为我们要最大化 Reward）
-                theta_trans[i] = (beta * theta_trans[i] + eta * grad_t).detach()
+                lam_i = torch.nan_to_num(grad_thetas[i]) / group_size
+                # 应用 \theta 动量更新公式（Gradient Ascent）
+                theta_trans[i] = (beta * theta_trans[i] + eta * lam_i).detach()
 
         return prot_traj, clean_traj
