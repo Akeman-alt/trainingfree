@@ -465,11 +465,11 @@ class FlowModule(LightningModule):
 
 
         # 使用统一的 reward 计算函数
-        from multiflow.data.reward_utils import create_reward_fn
+        from multiflow.rewards import MPNNReward
         
         # 创建 reward_fn，目标氨基酸为 'A' (Alanine)
         # 注意：这里使用字母 'A'，函数内部会自动转换为对应的数字索引
-        my_reward_fn = create_reward_fn(target_chars='A', device=device)
+        my_reward_fn = MPNNReward(device=device)
 
         # guidance_config = {
         #     'gamma': 0.1,       # 学习率/步长

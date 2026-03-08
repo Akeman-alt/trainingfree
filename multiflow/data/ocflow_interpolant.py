@@ -53,17 +53,18 @@ class GuidedInterpolant(Interpolant):
         # compute MPNN reward
         scores = self.reward_fn(seq_samples, backbone)
 
-        reward = scores.mean(dim=0)  # [B]
-        # normalization
-        reward = reward - reward.mean()
-        reward = reward / (reward.std() + 1e-6)
+        # 取多次采样的平均分数 [B]
+        reward = scores.mean(dim=0)
+
+        # 🚨 [关键修改]：删除了 reward = reward - reward.mean() 等归一化代码
+        # 因为 B=1 时减去均值会直接变成 0。
+        # 外面的 grad = grad / grad.norm() 已经起到了控制步长的作用。
 
         # NaN protection
         if torch.isnan(reward).any():
             reward = torch.nan_to_num(reward, nan=0.0)
 
         return reward
-
     def sample(
         self,
         num_batch,
@@ -127,84 +128,171 @@ class GuidedInterpolant(Interpolant):
         ts = torch.linspace(self._cfg.min_t, 1.0, num_timesteps, device=device)
 
         frames_to_atom37 = lambda x,y: all_atom.atom37_from_trans_rot(x, y, res_mask).detach().cpu()
-
+# ==========================================
+        # 🚨 优化核心：Asynchronous + VJP Adjoint Method
+        # ==========================================
+        num_iters = self.num_guidance_iters
+        eta = self.step_size      # 学习率 \eta
+        beta = self.momentum      # 动量衰减 \beta
+        num_steps = len(ts) - 1
+        
+        group_size = 5  # 每 5 步共享同一个 \theta 
+        num_thetas = (num_steps + group_size - 1) // group_size 
+        
+        # 初始化控制项 \theta (不再需要全局挂载梯度，我们手动维护)
+        theta_trans = [torch.zeros_like(trans_0) for _ in range(num_thetas)]
+        
         prot_traj, clean_traj = [], []
-        t_prev = ts[0]
+        
+        # 确保模型权重是被冻结的，不参与意外的梯度计算占用显存
+        for param in model.parameters():
+            param.requires_grad_(False)
 
-        # ==============================
-        # Forward trajectory
-        # ==============================
-        for t_next in ts[1:]:
-            batch['trans_t'], batch['rotmats_t'], batch['aatypes_t'] = trans_t, rotmats_t, aatypes_t
-            t_tensor = torch.ones((num_batch,1), device=device) * t_prev
-            batch['r3_t'], batch['so3_t'], batch['cat_t'] = t_tensor, t_tensor, t_tensor
-            dt = t_next - t_prev
-
+        # 2. 开启外层循环，进行多轮 OC-Flow 迭代
+        for k in range(num_iters):
+            states = [] # 用于极低内存开销保存每一帧的离散状态(路标)
+            trans_t = trans_0.detach().clone()
+            rotmats_t = rotmats_0.detach().clone()
+            aatypes_t = aatypes_0.detach().clone()
+            
+            t_prev = ts[0]
+            
+            # =======================================================
+            # 阶段 1：前向推断 (完全 no_grad，极大节省显存！)
+            # =======================================================
             with torch.no_grad():
-                model_out = model(batch)
-            pred_trans = model_out['pred_trans']
-            pred_rotmats = model_out['pred_rotmats']
-            pred_logits = model_out['pred_logits']
-            pred_aatypes = model_out['pred_aatypes']
-
-            clean_traj.append((frames_to_atom37(pred_trans, pred_rotmats), pred_aatypes.detach().cpu()))
-
-            # Euler integrator
-            trans_t = self._trans_euler_step(dt, t_prev, pred_trans, trans_t)
-            rotmats_t = self._rots_euler_step(dt, t_prev, pred_rotmats, rotmats_t)
-            aatypes_t = self._aatypes_euler_step(dt, t_prev, pred_logits, aatypes_t)
-
-            # diffuse mask
-            trans_t = _trans_diffuse_mask(trans_t, pred_trans, diffuse_mask)
-            rotmats_t = _rots_diffuse_mask(rotmats_t, pred_rotmats, diffuse_mask)
-
-            prot_traj.append((frames_to_atom37(trans_t, rotmats_t), aatypes_t.detach().cpu()))
-            t_prev = t_next
-
-        # ==============================
-        # Final reward guidance
-        # ==============================
-        batch['trans_t'], batch['rotmats_t'], batch['aatypes_t'] = trans_t, rotmats_t, aatypes_t
-        # model forward (no_grad)
-        with torch.no_grad():
-            model_out = model(batch)
-
-        pred_trans, pred_rotmats, pred_aatypes = model_out['pred_trans'], model_out['pred_rotmats'], model_out['pred_aatypes']
-
-        if self.reward_fn is not None:
-            # 1. 记录引导前的 reward
-            with torch.no_grad():
-                # 🚨 直接调用 self.reward_fn，只传 1 个参数（即结构坐标），彻底绕开 _compute_reward
-                r_before = self.reward_fn(pred_trans.detach())
-                r_before = torch.nan_to_num(r_before)
-
-            # 2. 解除 Lightning 的强制封锁，开启计算图
-            with torch.inference_mode(False), torch.enable_grad():
+                for step_idx, t_next in enumerate(ts[1:]):
+                    # 记录当前帧状态
+                    states.append({
+                        'trans': trans_t.clone(),
+                        'rotmats': rotmats_t.clone(),
+                        'aatypes': aatypes_t.clone(),
+                        't_prev': t_prev,
+                        't_next': t_next
+                    })
+                    
+                    dt = t_next - t_prev
+                    
+                    batch['trans_t'] = trans_t
+                    batch['rotmats_t'] = rotmats_t
+                    batch['aatypes_t'] = aatypes_t
+                    t_tensor = torch.ones((num_batch,1), device=device) * t_prev
+                    batch['r3_t'], batch['so3_t'], batch['cat_t'] = t_tensor, t_tensor, t_tensor
+                    
+                    model_out = model(batch)
+                    pred_trans = model_out['pred_trans']
+                    pred_rotmats = model_out['pred_rotmats']
+                    pred_logits = model_out['pred_logits']
+                    
+                    next_trans_t = self._trans_euler_step(dt, t_prev, pred_trans, trans_t)
+                    rotmats_t = self._rots_euler_step(dt, t_prev, pred_rotmats, rotmats_t)
+                    aatypes_t = self._aatypes_euler_step(dt, t_prev, pred_logits, aatypes_t)
+                    
+                    # 施加控制项
+                    theta_idx = step_idx // group_size
+                    next_trans_t = next_trans_t + theta_trans[theta_idx] * dt
+                    
+                    # 漫反射 mask
+                    next_trans_t = _trans_diffuse_mask(next_trans_t, pred_trans, diffuse_mask)
+                    rotmats_t = _rots_diffuse_mask(rotmats_t, pred_rotmats, diffuse_mask)
+                    
+                    trans_t = next_trans_t
+                    t_prev = t_next
+            
+            # 记录终点状态用于求导
+            states.append({
+                'trans': trans_t.clone(),
+                'rotmats': rotmats_t.clone(),
+                'aatypes': aatypes_t.clone()
+            })
+            
+            # =======================================================
+            # 阶段 2：计算 Reward 和 终点梯度 \nabla \Phi
+            # =======================================================
+            final_trans = states[-1]['trans'].detach().requires_grad_(True)
+            batch['trans_t'] = final_trans
+            batch['rotmats_t'] = states[-1]['rotmats']
+            batch['aatypes_t'] = states[-1]['aatypes']
+            
+            with torch.enable_grad():
+                model_out_final = model(batch)
+                pred_trans_final = model_out_final['pred_trans']
                 
-                final_trans = pred_trans.detach().clone().requires_grad_(True)
-
-                # 🚨 同样直接调用 self.reward_fn，完美匹配你的单参数模型
-                reward = self.reward_fn(final_trans)
+                # 计算 Reward（适配你代码里的 reward_fn）
+                reward = self.reward_fn(pred_trans_final)
                 reward = torch.nan_to_num(reward)
-
-                grad = autograd.grad(reward.sum(), final_trans)[0]
-                grad = torch.nan_to_num(grad)
-                grad = grad / (grad.norm(dim=-1, keepdim=True) + 1e-6)
-
-            # 3. 应用微调
-            pred_trans = pred_trans + step_size * grad.detach()
-
-            # 4. 记录微调后的 reward
-            with torch.no_grad():
-                r_after = self.reward_fn(pred_trans.detach())
-                r_after = torch.nan_to_num(r_after)
-
-            # Only print on rank 0 with flush
-            if not torch.distributed.is_initialized() or torch.distributed.get_rank() == 0:
-                print(f"\nReward before: {r_before.mean().item():.4f} | after: {r_after.mean().item():.4f}", flush=True)
                 
-        pred_atom37 = frames_to_atom37(pred_trans, pred_rotmats)
-        clean_traj.append((pred_atom37, pred_aatypes.detach().cpu()))
-        prot_traj.append((pred_atom37, pred_aatypes.detach().cpu()))
+                if k < num_iters - 1:
+                    # 获取针对 final_trans 的初始梯度
+                    grad_x = autograd.grad(reward.sum(), final_trans)[0]
+                    
+            if not torch.distributed.is_initialized() or torch.distributed.get_rank() == 0:
+                print(f"\n[OC-Flow] Iteration: {k+1}/{num_iters} | Reward: {reward.mean().item():.4f}", flush=True)
+
+            if k == num_iters - 1:
+                # 最后一轮直接收集生成好的轨迹并退出
+                pred_atom37 = frames_to_atom37(pred_trans_final, model_out_final['pred_rotmats'])
+                clean_traj.append((pred_atom37, model_out_final['pred_aatypes'].detach().cpu()))
+                prot_traj.append((pred_atom37, model_out_final['pred_aatypes'].detach().cpu()))
+                break
+                
+            # =======================================================
+            # 阶段 3：Vector-Jacobian Product (VJP) 逆向时间反向传播！
+            # =======================================================
+            grad_thetas = [torch.zeros_like(th) for th in theta_trans]
+            
+            with torch.enable_grad():
+                # 从倒数第一步往前走 (Step-by-step backward)
+                for step_idx in reversed(range(num_steps)):
+                    curr_state = states[step_idx]
+                    t_prev = curr_state['t_prev']
+                    t_next = curr_state['t_next']
+                    dt = t_next - t_prev
+                    
+                    # 重新激活输入张量，准备局部建图
+                    curr_trans = curr_state['trans'].detach().requires_grad_(True)
+                    curr_rotmats = curr_state['rotmats'].detach()
+                    curr_aatypes = curr_state['aatypes'].detach()
+                    
+                    theta_idx = step_idx // group_size
+                    curr_theta = theta_trans[theta_idx].detach().requires_grad_(True)
+                    
+                    batch['trans_t'] = curr_trans
+                    batch['rotmats_t'] = curr_rotmats
+                    batch['aatypes_t'] = curr_aatypes
+                    t_tensor = torch.ones((num_batch,1), device=device) * t_prev
+                    batch['r3_t'], batch['so3_t'], batch['cat_t'] = t_tensor, t_tensor, t_tensor
+                    
+                    # 仅为这 1 步重建计算图
+                    model_out = model(batch)
+                    pred_trans = model_out['pred_trans']
+                    
+                    next_trans_t = self._trans_euler_step(dt, t_prev, pred_trans, curr_trans)
+                    next_trans_t = next_trans_t + curr_theta * dt
+                    next_trans_t = _trans_diffuse_mask(next_trans_t, pred_trans, diffuse_mask)
+                    
+                    # 🚨 核心 VJP：用输出梯度 grad_x 向前推算输入梯度，算完瞬间释放图内存！
+                    vjp_out = autograd.grad(
+                        outputs=next_trans_t,
+                        inputs=(curr_trans, curr_theta),
+                        grad_outputs=grad_x
+                    )
+                    
+                    grad_curr_trans, grad_curr_theta = vjp_out[0], vjp_out[1]
+                    
+                    # 累积本时间步对应 \theta 的梯度
+                    grad_thetas[theta_idx] = grad_thetas[theta_idx] + grad_curr_theta
+                    
+                    # 把计算出的 x 的梯度传递给上一时间步
+                    grad_x = grad_curr_trans
+                    
+            # =======================================================
+            # 阶段 4：更新全局控制项 \theta
+            # =======================================================
+            for i in range(num_thetas):
+                grad_t = torch.nan_to_num(grad_thetas[i])
+                grad_t = grad_t / (grad_t.norm(dim=-1, keepdim=True) + 1e-6)
+                # 应用 \theta 动量更新公式
+                theta_trans[i] = (beta * theta_trans[i] + eta * grad_t).detach()
 
         return prot_traj, clean_traj
