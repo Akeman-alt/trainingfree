@@ -218,17 +218,27 @@ class GuidedInterpolant(Interpolant):
                 model_out_final = model(batch)
                 pred_trans_final = model_out_final['pred_trans']
                 
-                # 计算 Reward（适配你代码里的 reward_fn）
-                reward = self.reward_fn(pred_trans_final)
-                reward = torch.nan_to_num(reward)
+                # 🚨 关键修复：从模型输出中取出 logits
+                pred_logits_final = model_out_final['pred_logits']
+                
+                # 🚨 关键修复：使用你定义的 _compute_reward，传入 logits 和 final_trans
+                reward = self._compute_reward(pred_logits_final, pred_trans_final)
                 
                 if k < num_iters - 1:
                     # 获取针对 final_trans 的初始梯度
                     grad_x = autograd.grad(reward.sum(), final_trans)[0]
                     
             if not torch.distributed.is_initialized() or torch.distributed.get_rank() == 0:
-                print(f"\n[OC-Flow] Iteration: {k+1}/{num_iters} | Reward: {reward.mean().item():.4f}", flush=True)
-
+                # 🚨 额外：专门计算一个无采样噪声的 Determine Reward 用于观察
+                with torch.no_grad():
+                    # 直接取概率最大的氨基酸序列
+                    det_seq = torch.argmax(pred_logits_final, dim=-1).unsqueeze(0) # [1, B, L]
+                    # 用确定的序列算分数
+                    det_reward = self.reward_fn(det_seq, pred_trans_final.detach()).mean()
+                
+                # 打印真实波动的 Reward 和 稳定的 Deterministic Reward
+                print(f"\n[OC-Flow] Iteration: {k+1}/{num_iters} | Sampled R: {reward.mean().item():.4f} | Det R: {det_reward.item():.4f}", flush=True)
+            
             if k == num_iters - 1:
                 # 最后一轮直接收集生成好的轨迹并退出
                 pred_atom37 = frames_to_atom37(pred_trans_final, model_out_final['pred_rotmats'])
@@ -286,13 +296,20 @@ class GuidedInterpolant(Interpolant):
                     # 把计算出的 x 的梯度传递给上一时间步
                     grad_x = grad_curr_trans
                     
-            # =======================================================
+# =======================================================
             # 阶段 4：更新全局控制项 \theta
             # =======================================================
             for i in range(num_thetas):
                 grad_t = torch.nan_to_num(grad_thetas[i])
-                grad_t = grad_t / (grad_t.norm(dim=-1, keepdim=True) + 1e-6)
-                # 应用 \theta 动量更新公式
+                
+                # 🚨 修复：放弃 dim=-1 的残基归一化，采用类似 PyTorch clip_grad_norm_ 的全局裁剪
+                # 这样既能防止梯度爆炸，又能保留不同残基、不同时间步梯度的“相对大小”
+                max_grad_norm = 1.0
+                grad_norm = grad_t.norm() + 1e-6
+                if grad_norm > max_grad_norm:
+                    grad_t = grad_t * (max_grad_norm / grad_norm)
+                
+                # 应用 \theta 动量更新公式（Gradient Ascent, 因为我们要最大化 Reward）
                 theta_trans[i] = (beta * theta_trans[i] + eta * grad_t).detach()
 
         return prot_traj, clean_traj
