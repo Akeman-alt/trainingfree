@@ -193,11 +193,11 @@ model:
     dropout: 0.0
 inference:
   predict_dir: ./inference_outputs/
-  inference_subdir: run_expC_scale1.5_gamma0.1_steps10
+  inference_subdir: run_ocflow_guidance
   task: unconditional
   seed: 123
   use_gpu: true
-  num_gpus: 4
+  num_gpus: 8
   saved_ckpt_dir: ./saved_ckpts/frameflow
   unconditional_ckpt_path: ./weights/last.ckpt
   also_fold_pmpnn_seq: true
@@ -235,12 +235,22 @@ inference:
       do_sde: false
     self_condition: true
     guidance:
+      task: struct_stability
       gamma: 0.1
-      steps: 10
+      steps: 5
       'N': 8
       lambda_kl: 0.0
       theta_clamp: 3.0
       struct_scale: 1.5
+      mpnn_ca_only: false
+      target_chars:
+      - A
+      enabled: true
+      num_iters: 5
+      step_size: 0.01
+      momentum: 0.9
+      joint_sequence: true
+      gumbel_temp: 1.0
   pmpnn_dir: ./ProteinMPNN
   folding:
     seq_per_sample: 8
@@ -250,7 +260,7 @@ inference:
     pt_hub_dir: ./.cache/torch/
     colabfold_path: path/to/colabfold-conda/bin/colabfold_batch
   samples:
-    samples_per_length: 25
+    samples_per_length: 100
     num_batch: 1
     length_subset:
     - 70
