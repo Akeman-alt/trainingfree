@@ -48,7 +48,7 @@ def _aatypes_diffuse_mask(aatypes_t, aatypes_1, diffuse_mask):
 
 class Interpolant:
 
-    def __init__(self, cfg):
+    def __init__(self, cfg, guidance_config=None, reward_fn=None):
         self._cfg = cfg
         self._rots_cfg = cfg.rots
         self._trans_cfg = cfg.trans

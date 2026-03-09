@@ -111,19 +111,16 @@ hydra:
   overrides:
     hydra:
     - hydra.run.dir="/data1/zq/multiflow"
-    - hydra.job.name=train_ddp_process_5
+    - hydra.job.name=train_ddp_process_1
     - hydra.mode=RUN
     task:
+    - inference.interpolant.sampling.num_timesteps=100
     - inference.num_gpus=8
-    - inference.interpolant.guidance.enabled=True
-    - inference.interpolant.guidance.num_iters=5
-    - inference.interpolant.guidance.step_size=0.01
-    - inference.interpolant.guidance.momentum=0.9
-    - inference.inference_subdir=run_ocflow_guidance
+    - inference.inference_subdir=base_guidance_steps100
   job:
-    name: train_ddp_process_5
+    name: train_ddp_process_1
     chdir: null
-    override_dirname: inference.inference_subdir=run_ocflow_guidance,inference.interpolant.guidance.enabled=True,inference.interpolant.guidance.momentum=0.9,inference.interpolant.guidance.num_iters=5,inference.interpolant.guidance.step_size=0.01,inference.num_gpus=8
+    override_dirname: inference.inference_subdir=base_guidance_steps100,inference.interpolant.sampling.num_timesteps=100,inference.num_gpus=8
     id: ???
     num: ???
     config_name: inference_unconditional

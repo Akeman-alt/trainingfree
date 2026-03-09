@@ -469,24 +469,28 @@ class FlowModule(LightningModule):
         
         # 创建 reward_fn，目标氨基酸为 'A' (Alanine)
         # 注意：这里使用字母 'A'，函数内部会自动转换为对应的数字索引
-        my_reward_fn = MPNNReward(device=device)
+        #my_reward_fn = MPNNReward(device=device)
 
-        # guidance_config = {
-        #     'gamma': 0.1,       # 学习率/步长
-        #     'steps': 5,         # 内部优化步数 (因为有 Warm Start，步数可以少一点)
-        #     'N': 8,            # 采样次数
-        #     'lambda_kl': 0.0,   # KL 惩罚
-        #     'theta_clamp': 3
-        # }
+        class DistanceReward:
+            def __call__(self, seq, backbone):
+                # backbone shape: [B, L, 3]
+                n_term = backbone[:, 0, :]
+                c_term = backbone[:, -1, :]
+                # 计算欧氏距离 (首尾残基的拉扯) -> [B]
+                dist = torch.norm(n_term - c_term, dim=-1)
+                
+                # 为了适配 _compute_reward 里的 scores.mean(dim=0)
+                # 把它变成 [S, B] 的形状返回
+                return dist.unsqueeze(0).expand(seq.shape[0], -1)
+        my_reward_fn = DistanceReward()
+
 
         from omegaconf import OmegaConf
         
-        # self._infer_cfg.interpolant 对应 yaml 里的 inference.interpolant
-        # 我们用 .get() 方法，防止 yaml 里没写报错
+
         guidance_config = self._infer_cfg.interpolant.get('guidance', None)
 
-        # 2. 如果读取到了（不是 None），通常它是 OmegaConf 的 DictConfig 类型
-        #    为了安全起见，我们将它转换为普通的 Python 字典
+
         if guidance_config is not None:
             if not isinstance(guidance_config, dict):
                 guidance_config = OmegaConf.to_container(guidance_config, resolve=True)
