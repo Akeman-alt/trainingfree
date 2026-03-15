@@ -1,3 +1,7 @@
 - inference.interpolant.sampling.num_timesteps=100
+- inference.interpolant.guidance.enabled=True
+- inference.interpolant.guidance.num_iters=20
+- inference.interpolant.guidance.step_size=0.0
+- inference.interpolant.guidance.momentum=0.0
+- inference.inference_subdir=run_ocflow_forward_folding_test
 - inference.num_gpus=8
-- inference.inference_subdir=base_guidance_steps100

@@ -50,9 +50,29 @@ inference:
       interpolant_type: masking
     sampling:
       num_timesteps: 500
+      use_ttt_guidance: True    # ✨ 新增：开启 TTT / OC-Flow 引导支持
       do_sde: False
 
     self_condition: True
+
+    # ✨ 新增：OC-Flow 引导超参数配置块
+    guidance:
+      task: 'struct_stability'
+      gamma: 0.1
+      steps: 5
+      N: 8
+      lambda_kl: 0.0
+      theta_clamp: 3.0
+      # guidance of structure
+      struct_scale: 1.5
+      mpnn_ca_only: False
+      target_chars: ['A']
+      enabled: True
+      num_iters: 5
+      step_size: 0.01
+      momentum: 0.9
+      joint_sequence: True
+      gumbel_temp: 1.0
 
   # Directory of software, weights, and outputs.  
   pmpnn_dir: ./ProteinMPNN

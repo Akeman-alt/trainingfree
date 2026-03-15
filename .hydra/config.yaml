@@ -193,19 +193,19 @@ model:
     dropout: 0.0
 inference:
   predict_dir: ./inference_outputs/
-  inference_subdir: base_guidance_steps100
-  task: unconditional
+  inference_subdir: run_ocflow_forward_folding_test
+  task: forward_folding
   seed: 123
   use_gpu: true
   num_gpus: 8
   saved_ckpt_dir: ./saved_ckpts/frameflow
-  unconditional_ckpt_path: ./weights/last.ckpt
-  also_fold_pmpnn_seq: true
+  forward_folding_ckpt_path: ./weights/last.ckpt
+  also_fold_pmpnn_seq: false
   write_sample_trajectories: false
   interpolant:
     min_t: 0.01
     provide_kappa: false
-    codesign_separate_t: false
+    codesign_separate_t: true
     rots:
       corrupt: true
       sample_schedule: exp
@@ -226,8 +226,8 @@ inference:
       schedule: linear
       schedule_exp_rate: -3
       temp: 0.1
-      noise: 20.0
-      do_purity: true
+      noise: 0.0
+      do_purity: false
       interpolant_type: masking
     sampling:
       num_timesteps: 100
@@ -246,27 +246,17 @@ inference:
       target_chars:
       - A
       enabled: true
-      num_iters: 5
-      step_size: 0.01
-      momentum: 0.9
+      num_iters: 20
+      step_size: 0.0
+      momentum: 0.0
       joint_sequence: true
       gumbel_temp: 1.0
   pmpnn_dir: ./ProteinMPNN
   folding:
-    seq_per_sample: 8
+    seq_per_sample: 1
     folding_model: esmf
     own_device: false
     pmpnn_path: ./ProteinMPNN/
     pt_hub_dir: ./.cache/torch/
     colabfold_path: path/to/colabfold-conda/bin/colabfold_batch
-  samples:
-    samples_per_length: 100
-    num_batch: 1
-    length_subset:
-    - 70
-    - 100
-    - 200
-    - 300
-    min_length: 60
-    max_length: 256
-    length_step: 1
+  samples: null

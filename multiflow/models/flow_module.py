@@ -26,7 +26,7 @@ from multiflow.experiments import utils as eu
 from biotite.sequence.io import fasta
 from pytorch_lightning.loggers.wandb import WandbLogger
 from pytorch_lightning.utilities import rank_zero_only
-
+from multiflow.rewards import MPNNReward
 
 class FlowModule(LightningModule):
 
@@ -57,6 +57,7 @@ class FlowModule(LightningModule):
         self._folding_device_id = folding_device_id
 
         self.aatype_pred_num_tokens = cfg.model.aatype_pred_num_tokens
+        self.mpnn = None
 
     @property
     def folding_model(self):
@@ -465,25 +466,83 @@ class FlowModule(LightningModule):
 
 
         # 使用统一的 reward 计算函数
-        from multiflow.rewards import MPNNReward
+
         
         # 创建 reward_fn，目标氨基酸为 'A' (Alanine)
         # 注意：这里使用字母 'A'，函数内部会自动转换为对应的数字索引
         #my_reward_fn = MPNNReward(device=device)
 
-        class DistanceReward:
-            def __call__(self, seq, backbone):
-                # backbone shape: [B, L, 3]
-                n_term = backbone[:, 0, :]
-                c_term = backbone[:, -1, :]
-                # 计算欧氏距离 (首尾残基的拉扯) -> [B]
-                dist = torch.norm(n_term - c_term, dim=-1)
-                
-                # 为了适配 _compute_reward 里的 scores.mean(dim=0)
-                # 把它变成 [S, B] 的形状返回
-                return dist.unsqueeze(0).expand(seq.shape[0], -1)
-        my_reward_fn = DistanceReward()
+        # class GeometryReward:
 
+        #     def __call__(self, seq, backbone):
+
+        #         B, L, _ = backbone.shape
+
+        #         # -------- compactness --------
+        #         center = backbone.mean(dim=1, keepdim=True)
+        #         rg = torch.sqrt(((backbone - center)**2).sum(-1).mean(dim=1))
+
+        #         # -------- soft clash --------
+        #         dist = torch.cdist(backbone, backbone)
+
+        #         mask = torch.eye(L, device=backbone.device).bool()
+        #         dist = dist.masked_fill(mask.unsqueeze(0), 10.0)
+
+        #         clash = torch.exp(-(dist / 3.8)**2)
+        #         clash_penalty = clash.mean(dim=(1,2))
+
+        #         # -------- smooth bond --------
+        #         bond = backbone[:,1:] - backbone[:,:-1]
+        #         bond_len = torch.norm(bond, dim=-1)
+
+        #         bond_penalty = ((bond_len - 3.8)**2).mean(dim=1)
+
+        #         reward = (
+        #             - rg
+        #             - 0.2 * clash_penalty
+        #             - 0.1 * bond_penalty
+        #         )
+
+        #         return reward.unsqueeze(0).expand(seq.shape[0], -1)
+        # my_reward_fn = GeometryReward()
+
+        class MPNNDesignReward:
+            def __init__(self, mpnn):
+                self.mpnn = mpnn
+
+            def __call__(self, seq, backbone):
+                # seq shape: [N, B, L]
+                # backbone shape: [B, L, 3]
+                N, B, L = seq.shape
+
+                # 1. 计算 MPNN 概率
+                # MPNNReward 返回的是展平的 [N*B]
+                logprob_flat = self.mpnn(seq, backbone)
+                
+                # 重新塑形为 [N, B]，以便正确对齐 Batch 维度
+                logprob = logprob_flat.view(N, B)
+
+                # 2. 计算几何正则化 (Clash Penalty)
+                dist = torch.cdist(backbone, backbone)
+                mask = torch.eye(dist.shape[-1], device=dist.device).bool()
+                dist = dist.masked_fill(mask.unsqueeze(0), 10.0)
+                
+                # clash shape: [B]
+                clash = torch.exp(-(dist / 3.8)**2).mean(dim=(1,2))
+
+                # 3. 组合 Reward
+                # clash.unsqueeze(0) 会变成 [1, B]，这样就能与 logprob [N, B] 完美安全地相减
+                reward = logprob - 0.05 * clash.unsqueeze(0)
+                
+                # 最终返回 [N, B] 给 ocflow_interpolant.py 做 mean(dim=0)
+                return reward
+        mpnn = MPNNReward(device=device)
+        my_reward_fn = MPNNDesignReward(mpnn)
+        #class min_backbone:
+        #    def __call__(self, seq, backbone):
+        #        reward = - backbone.square().mean()
+        #        return reward
+        #my_reward_fn = min_backbone()
 
         from omegaconf import OmegaConf
         
@@ -575,6 +634,7 @@ class FlowModule(LightningModule):
             forward_folding=self._infer_cfg.task == 'forward_folding',
             inverse_folding=self._infer_cfg.task == 'inverse_folding',
             separate_t=self._infer_cfg.interpolant.codesign_separate_t,
+            log_save_dir=sample_dirs[0]
         )
         diffuse_mask = diffuse_mask if diffuse_mask is not None else torch.ones(1, sample_length)
         atom37_traj = [x[0] for x in prot_traj]

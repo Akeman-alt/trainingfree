@@ -651,3 +651,49 @@
 [2026-03-09 00:20:49,482][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpz_hx24j9/test.o -laio -o /data2/zq/conda_environment/tmp/tmpz_hx24j9/a.out
 [2026-03-09 00:20:49,877][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpusp45w7s/test.c -o /data2/zq/conda_environment/tmp/tmpusp45w7s/test.o
 [2026-03-09 00:20:49,911][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpusp45w7s/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpusp45w7s/a.out
+[2026-03-14 13:52:31,295][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-14 13:52:31,418][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-14 13:57:08,266][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-14 13:57:08,656][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-14 14:02:13,593][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-14 14:02:42,831][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-14 14:02:43,475][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-14 14:05:39,512][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:6
+[2026-03-14 14:05:40,112][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmph0i_e7ik/test.c -o /data2/zq/conda_environment/tmp/tmph0i_e7ik/test.o
+[2026-03-14 14:05:40,129][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmph0i_e7ik/test.o -laio -o /data2/zq/conda_environment/tmp/tmph0i_e7ik/a.out
+[2026-03-14 14:05:40,491][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpn311665a/test.c -o /data2/zq/conda_environment/tmp/tmpn311665a/test.o
+[2026-03-14 14:05:40,508][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpn311665a/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmpn311665a/a.out
+[2026-03-14 21:02:06,269][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-14 21:02:06,270][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-14 21:33:37,080][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-14 21:33:37,428][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-14 21:37:09,620][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-14 21:37:09,783][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-14 21:40:03,225][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:6
+[2026-03-14 21:40:03,843][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpfu59b1r_/test.c -o /data2/zq/conda_environment/tmp/tmpfu59b1r_/test.o
+[2026-03-14 21:40:03,861][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpfu59b1r_/test.o -laio -o /data2/zq/conda_environment/tmp/tmpfu59b1r_/a.out
+[2026-03-14 21:40:04,236][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmp1gp64fo5/test.c -o /data2/zq/conda_environment/tmp/tmp1gp64fo5/test.o
+[2026-03-14 21:40:04,255][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmp1gp64fo5/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmp1gp64fo5/a.out
+[2026-03-15 13:36:50,520][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-15 13:36:52,063][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 8 nodes.
+[2026-03-15 13:43:09,643][multiflow.models.folding_model][INFO] - Loading ESMFold on device cuda:2
+[2026-03-15 13:43:10,246][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmpdu61b0yf/test.c -o /data2/zq/conda_environment/tmp/tmpdu61b0yf/test.o
+[2026-03-15 13:43:10,279][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmpdu61b0yf/test.o -laio -o /data2/zq/conda_environment/tmp/tmpdu61b0yf/a.out
+[2026-03-15 13:43:10,705][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -O2 -isystem /data2/zq/conda_environment/conda_envs/multiflow/include -fPIC -c /data2/zq/conda_environment/tmp/tmp7dpjqr9e/test.c -o /data2/zq/conda_environment/tmp/tmp7dpjqr9e/test.o
+[2026-03-15 13:43:10,723][root][INFO] - gcc -pthread -B /data2/zq/conda_environment/conda_envs/multiflow/compiler_compat /data2/zq/conda_environment/tmp/tmp7dpjqr9e/test.o -L/usr -L/usr/lib64 -lcufile -o /data2/zq/conda_environment/tmp/tmp7dpjqr9e/a.out
+[2026-03-15 15:19:57,398][multiflow.data.datasets][INFO] - Training: 2778 examples
+[2026-03-15 15:19:57,495][multiflow.data.datasets][INFO] - Validation: 40 examples with lengths [ 51  93 120 147 174 200 228 256]
+[2026-03-15 15:19:59,020][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-15 15:19:59,103][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 8 nodes.
+[2026-03-15 15:47:14,077][multiflow.data.datasets][INFO] - Training: 2778 examples
+[2026-03-15 15:47:14,156][multiflow.data.datasets][INFO] - Validation: 40 examples with lengths [ 51  93 120 147 174 200 228 256]
+[2026-03-15 15:47:15,091][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-15 15:47:15,400][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 8 nodes.
+[2026-03-15 15:50:17,524][multiflow.data.datasets][INFO] - Training: 2778 examples
+[2026-03-15 15:50:17,615][multiflow.data.datasets][INFO] - Validation: 40 examples with lengths [ 51  93 120 147 174 200 228 256]
+[2026-03-15 15:50:19,746][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-15 15:50:20,587][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 8 nodes.
+[2026-03-15 16:04:16,300][multiflow.data.datasets][INFO] - Training: 2778 examples
+[2026-03-15 16:04:16,482][multiflow.data.datasets][INFO] - Validation: 40 examples with lengths [ 51  93 120 147 174 200 228 256]
+[2026-03-15 16:04:18,265][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-15 16:04:19,446][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 8 nodes.

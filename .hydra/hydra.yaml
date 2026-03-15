@@ -111,19 +111,23 @@ hydra:
   overrides:
     hydra:
     - hydra.run.dir="/data1/zq/multiflow"
-    - hydra.job.name=train_ddp_process_1
+    - hydra.job.name=train_ddp_process_3
     - hydra.mode=RUN
     task:
     - inference.interpolant.sampling.num_timesteps=100
+    - inference.interpolant.guidance.enabled=True
+    - inference.interpolant.guidance.num_iters=20
+    - inference.interpolant.guidance.step_size=0.0
+    - inference.interpolant.guidance.momentum=0.0
+    - inference.inference_subdir=run_ocflow_forward_folding_test
     - inference.num_gpus=8
-    - inference.inference_subdir=base_guidance_steps100
   job:
-    name: train_ddp_process_1
+    name: train_ddp_process_3
     chdir: null
-    override_dirname: inference.inference_subdir=base_guidance_steps100,inference.interpolant.sampling.num_timesteps=100,inference.num_gpus=8
+    override_dirname: inference.inference_subdir=run_ocflow_forward_folding_test,inference.interpolant.guidance.enabled=True,inference.interpolant.guidance.momentum=0.0,inference.interpolant.guidance.num_iters=20,inference.interpolant.guidance.step_size=0.0,inference.interpolant.sampling.num_timesteps=100,inference.num_gpus=8
     id: ???
     num: ???
-    config_name: inference_unconditional
+    config_name: inference_forward_folding
     env_set: {}
     env_copy: []
     config:
